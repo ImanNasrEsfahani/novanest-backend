@@ -1,0 +1,9 @@
+django==4.2.4
+django-cors-headers
+django-cors-headers
+djangorestframework
+djangorestframework
+markdown
+django-filter
+django-rest-knox
+mysqlclient

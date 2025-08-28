@@ -1,0 +1,88 @@
+from django.db import models
+
+# Create your models here.
+
+class StartUpsForm(models.Model):
+  firstName=models.CharField(max_length=300,blank=True)
+  lastName=models.CharField(max_length=300,blank=True)
+  birthDate=models.DateField(blank=True)
+  email=models.EmailField(blank=True)
+  countryOfResidence=models.CharField(max_length=300,blank=True)
+  provinceOfResidence=models.CharField(max_length=300,blank=True)
+  type=models.CharField(max_length=300,blank=True)
+  ideaExplanation=models.CharField(max_length=300,blank=True)    
+  getToKnowUs=models.CharField(max_length=300,blank=True)        
+  pitchDeckFile=models.FileField(upload_to='pitchdeckfile',null=True,blank=True,editable=True)      
+  businessPlanFile=models.FileField(upload_to='businessPlan',null=True,blank=True,editable=True)
+  productName=models.CharField(max_length=500,blank=True)
+  siteAddress=models.CharField(max_length=500,blank=True)
+  customerProblem=models.TextField(blank=True)
+  solution=models.TextField(blank=True)
+  productLevel = models.CharField(max_length=200,blank=True)
+  scalable=models.TextField(blank=True)
+  monetizationOfYourPlan=models.TextField(blank=True)
+  structureOfYourSales=models.TextField(blank=True)
+  financialModelFile= models.FileField(upload_to='financialModelFile',null=True,blank=True,editable=True)
+  cooperatedWithInvestors= models.TextField(blank=True)
+  financialFile = models.FileField(upload_to='financialFile',null=True,blank=True,editable=True)
+  customerCharacteristic = models.TextField(blank=True)
+  currentCustomers = models.TextField(blank=True)
+  estimatedMarketSize= models.TextField(blank=True)
+  totalTamSamSom = models.TextField(blank=True)
+  startupRevenue=models.TextField(blank=True)
+  monthlyIncome=models.TextField(blank=True)
+  currentInterestRate=models.TextField(blank=True)
+  currentRaisedFunding=models.TextField(blank=True)
+  neededCapital=models.TextField(blank=True)
+  createdAt= models.DateTimeField(auto_now_add=True,blank=True)
+  updatedAt= models.DateTimeField(auto_now=True,blank=True)
+
+
+class ContactUs(models.Model):
+  name=models.CharField(max_length=250,blank=True)
+  email=models.EmailField(blank=True)
+  number=models.CharField(max_length=250,blank=True)
+  subject=models.CharField(max_length=500,blank=True)
+  message=models.TextField(blank=True)
+  createdAt=models.DateTimeField(auto_now_add=True,blank=True)
+
+
+class PartnerMembership(models.Model):
+  firstName=models.CharField(max_length=500, blank=True)
+  lastName=models.CharField(max_length=500, blank=True)
+  birthDate=models.DateField(blank=True)
+  email=models.EmailField(blank=True)
+  countryOfResidence=models.CharField(max_length=500, blank=True)
+  provinceOfResidence=models.CharField(max_length=500, blank=True)
+  companyName=models.CharField(max_length=500, blank=True)
+  investmentCeiling=models.CharField(max_length=500, blank=True)
+  howDidYouKnowUs=models.CharField(max_length=500, blank=True)
+  createdAt=models.DateTimeField(auto_now_add=True, blank=True)     
+  updatedAt=models.DateTimeField(auto_now=True, blank=True)
+
+class InvestorRegistration(models.Model):
+  firstName=models.CharField(max_length=500, blank=True)
+  lastName=models.CharField(max_length=500, blank=True)
+  email=models.EmailField(blank=True)
+  birthDate=models.DateField(blank=True)
+  countryOfResidence=models.CharField(max_length=500, blank=True)
+  provinceOfResidence=models.CharField(max_length=500, blank=True)
+  companyName=models.CharField(max_length=500, blank=True)
+  investmentCeiling=models.CharField(max_length=500, blank=True)
+  preferredAreas=models.CharField(max_length=500, blank=True)
+  howDidYouKnowUs=models.CharField(max_length=500, blank=True)
+  createdAt=models.DateTimeField(auto_now_add=True)
+  updatedAt=models.DateTimeField(auto_now=True)
+
+
+class Entrepreneur(models.Model):
+  firstName=models.CharField(max_length=500, blank=True)
+  lastName=models.CharField(max_length=500, blank=True)
+  email=models.EmailField(blank=True)
+  birthDate=models.DateField(blank=True)
+  countryOfResidence=models.CharField(max_length=500, blank=True)
+  provinceOfResidence=models.CharField(max_length=500, blank=True)
+  companyName=models.CharField(max_length=500, blank=True)
+  investmentCeiling=models.CharField(max_length=500, blank=True)
+  preferredAreas=models.CharField(max_length=500, blank=True)
+  howDidYouKnowUs=models.CharField(max_length=500, blank=True)  
