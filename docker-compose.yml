@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
@@ -12,20 +14,25 @@ services:
       - db
     environment:
       - DEBUG=True
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - DB_NAME=novanest_db
+      - DB_USER=novanest_user
+      - DB_PASSWORD=securepassword
       - DB_HOST=db
-      - DB_PORT=5432
+      - DB_PORT=3306
 
   db:
-    image: postgres:15
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
+    image: mysql:8.0
+    restart: always
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      MYSQL_DATABASE: novanest_db
+      MYSQL_USER: novanest_user
+      MYSQL_PASSWORD: securepassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
 
 volumes:
-  postgres_data:
+  db_data:
