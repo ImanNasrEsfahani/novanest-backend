@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   web:
+    container_name: novanest-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,6 +23,7 @@ services:
       - DB_PORT=3306
 
   db:
+    container_name: novanest-db
     image: mysql:8.0
     restart: always
     environment:
