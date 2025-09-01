@@ -20,9 +20,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True  # or EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.office365.com'
 EMAIL_PORT = 587  # or 465 for SSL
-EMAIL_HOST_USER = 'amir.esfahanizadeh@landaholding.com'
+EMAIL_HOST_USER = 'iman.nasr.esfahan@gmail.com'
 EMAIL_HOST_PASSWORD = 'F!835563246614ox'
-DEFAULT_FROM_EMAIL = 'amir.esfahanizadeh@landaholding.com'
+DEFAULT_FROM_EMAIL = 'iman.nasr.esfahan@gmail.com'
 
 
 
@@ -35,7 +35,14 @@ SECRET_KEY = 'django-insecure-ike^dq05jto0^8ap4710wwr0-ige+r&#wd$6hi28ec4jwqgtj2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'back.novanestventure.com',
+    'www.novanestventure.com',
+    'novanestventure.com',
+]
 
 
 # Application definition
