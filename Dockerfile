@@ -22,13 +22,13 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy project files
 COPY . /app/
 
-# Expose port (default for Django)
-EXPOSE 8000
-
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Expose port (default for Django)
+EXPOSE 8000
 
 # Run the Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
