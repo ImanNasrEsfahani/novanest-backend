@@ -43,6 +43,8 @@ ALLOWED_HOSTS = [
     'back.novanestventure.com',
     'www.novanestventure.com',
     'novanestventure.com',
+    "https://www.novanestventure.com",
+    "https://novanestventure.com",
 ]
 
 
