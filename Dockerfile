@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     default-libmysqlclient-dev \
     build-essential \
-    && rm -rf /var/lib/apt/lists
+    netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
     
 # Set work directory
 WORKDIR /app
