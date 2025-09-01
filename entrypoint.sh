@@ -10,6 +10,7 @@ done
 
 echo "Database is up - running migrations..."
 python manage.py makemigrations
+python manage.py makemigrations forms
 python manage.py migrate
 
 echo "Starting server..."
