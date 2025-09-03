@@ -1,7 +1,9 @@
 from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration, Entrepreneur
 from rest_framework import serializers
 from django.core.mail import EmailMultiAlternatives
+from .mailgun import send_mailgun_message
 from django.template.loader import render_to_string
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,19 +23,20 @@ class StartupFormSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         subject = 'Thank you for registering your startup'
-        from_email = 'amir.esfahanizadeh@landaholding.com'  # Use the same email as in EMAIL_HOST_USER
         to_email = instance.email
         context = {'first_name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nThanks for registering your startup with us."
         html_content = render_to_string('startup_registration_email.html', context)
 
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
+        # Send to the user
+        send_mailgun_message(to_email, subject, text_content, html=html_content)
 
-        try:
-            email.send()
-        except Exception as e:
-            logger.error(f"Failed to send registration email: {e}")
+        # Optionally notify admins
+        admin_list = getattr(settings, "MAILGUN_ADMIN_RECIPIENTS", [])
+        if admin_list:
+            admin_subject = f"New startup registration: {instance.firstName} {instance.lastName}"
+            admin_text = f"New registration details: email={instance.email}"
+            send_mailgun_message(admin_list, admin_subject, admin_text)
 
         return instance
     

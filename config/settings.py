@@ -24,7 +24,11 @@ EMAIL_HOST_USER = 'iman.nasr.esfahan@gmail.com'
 EMAIL_HOST_PASSWORD = 'F!835563246614ox'
 DEFAULT_FROM_EMAIL = 'iman.nasr.esfahan@gmail.com'
 
-
+# Mailgun configuration (use env vars in production)
+MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY", "")
+MAILGUN_DOMAIN = os.getenv("MAILGUN_DOMAIN", "sandboxe038667de7e1441fb8de744914edf4ea.mailgun.org")
+MAILGUN_FROM_EMAIL = os.getenv("MAILGUN_FROM_EMAIL", "postmaster@sandboxe038667de7e1441fb8de744914edf4ea.mailgun.org")
+MAILGUN_ADMIN_RECIPIENTS = os.getenv("MAILGUN_ADMIN_RECIPIENTS", "info@novanestventure.com").split(",")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
