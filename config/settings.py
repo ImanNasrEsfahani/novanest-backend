@@ -18,11 +18,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True  # or EMAIL_USE_SSL = True
-EMAIL_HOST = 'smtp.office365.com'
-EMAIL_PORT = 587  # or 465 for SSL
-EMAIL_HOST_USER = 'iman.nasr.esfahan@gmail.com'
-EMAIL_HOST_PASSWORD = 'F!835563246614ox'
-DEFAULT_FROM_EMAIL = 'iman.nasr.esfahan@gmail.com'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.office365.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))  # or 465 for SSL
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'iman.nasr.esfahan@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
 # Mailgun configuration (use env vars in production)
 MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY", "")
