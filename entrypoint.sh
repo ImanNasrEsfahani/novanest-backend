@@ -4,7 +4,7 @@
 echo "Database Host: $DB_HOST"
 echo "Database Port: $DB_PORT"
 echo "Waiting for database..."
-while ! nc -z $DB_HOST $DB_PORT; do
+while ! nc -z "$DB_HOST" "$DB_PORT"; do
   sleep 1
 done
 

@@ -25,8 +25,10 @@ COPY . /app/
 
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Ensure entrypoint has Unix line endings and is executable (fixes permission denied on some hosts)
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+# Execute explicitly with bash to avoid exec permission / interpreter issues
+ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
 
 # Expose port (default for Django)
 EXPOSE 8000
