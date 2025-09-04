@@ -1,6 +1,12 @@
-from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration, Entrepreneur
+from .models import (
+    StartUpsForm,
+    ContactUs,
+    PartnerMembership,
+    InvestorRegistration,
+    Entrepreneur,
+)
+
 from rest_framework import serializers
-from django.core.mail import EmailMultiAlternatives
 from .mailgun import send_mailgun_message
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -26,7 +32,7 @@ class StartupFormSerializer(serializers.ModelSerializer):
         to_email = instance.email
         context = {'first_name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nThanks for registering your startup with us."
-        html_content = render_to_string('startup_registration_email.html', context)
+        html_content = render_to_string("startup_registration_email.html", context)
 
         # Send to the user
         send_mailgun_message(to_email, subject, text_content, html=html_content)
@@ -56,9 +62,7 @@ class ContactUsSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.name},\n\nThanks for reaching out. We'll respond to your message shortly."
         html_content = render_to_string('contact_us_email.html', context)
 
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        send_mailgun_message(to_email, subject, text_content, html=html_content, from_email=from_email)
 
         return instance
 
@@ -76,11 +80,9 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
         to_email = instance.email
         context = {'name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as a partner!"
-        html_content = render_to_string('partner_membership_email.html', context)
+        html_content = render_to_string("partner_membership_email.html", context)
 
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        send_mailgun_message(to_email, subject, text_content, html=html_content, from_email=from_email)
 
         return instance
     
@@ -97,14 +99,14 @@ class InvestorRegistrationSerializer(serializers.ModelSerializer):
         subject = 'Thank you for registering as an investor'
         from_email = 'amir.esfahanizadeh@landaholding.com'
         to_email = instance.email
-        context = {'first_name': instance.firstName}
-        text_content = f"Hi {instance.firstName},\n\nThank you for registering as an investor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
-        html_content = render_to_string('investor_registration_email.html', context)
+        context = {"first_name": instance.firstName}
+        text_content = (
+            f"Hi {instance.firstName},\n\nThank you for registering as an investor. "
+            "We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
+        )
+        html_content = render_to_string("investor_registration_email.html", context)
 
-        # Create and send email
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        send_mailgun_message(to_email, subject, text_content, html=html_content, from_email=from_email)
 
         return instance
     
@@ -122,14 +124,14 @@ class EntrepreneurSerializer(serializers.ModelSerializer):
         subject = 'Thank you for registering as an investor'
         from_email = 'amir.esfahanizadeh@landaholding.com'
         to_email = instance.email
-        context = {'first_name': instance.firstName}
-        text_content = f"Hi {instance.firstName},\n\nThank you for registering as an investor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
-        html_content = render_to_string('Entrepreneur_registration_email.html', context)
+        context = {"first_name": instance.firstName}
+        text_content = (
+            f"Hi {instance.firstName},\n\nThank you for registering as an investor. "
+            "We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
+        )
+        html_content = render_to_string("Entrepreneur_registration_email.html", context)
 
-        # Create and send email
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        send_mailgun_message(to_email, subject, text_content, html=html_content, from_email=from_email)
 
         return instance
     
