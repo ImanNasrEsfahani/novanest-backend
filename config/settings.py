@@ -16,15 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True  # or EMAIL_USE_SSL = True
-EMAIL_HOST = 'smtp.office365.com'
-EMAIL_PORT = 587  # or 465 for SSL
-EMAIL_HOST_USER = 'iman.nasr.esfahan@gmail.com'
-EMAIL_HOST_PASSWORD = 'F!835563246614ox'
-DEFAULT_FROM_EMAIL = 'iman.nasr.esfahan@gmail.com'
-
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -197,3 +188,11 @@ REST_FRAMEWORK = {
         'knox.auth.TokenAuthentication'
     ]
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.office365.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')            # e.g. 'no-reply@yourdomain.com'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
