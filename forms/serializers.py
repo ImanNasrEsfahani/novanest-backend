@@ -23,7 +23,7 @@ class StartupFormSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         subject = 'Thank you for registering your startup'
-        from_email = settings.DEFAULT_FROM_EMAIL  # Use configured default sender
+        from_email = settings.MS_GRAPH_SENDER  # Use configured default sender
         to_email = instance.email
         context = {'first_name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nThanks for registering your startup with us."
@@ -49,7 +49,7 @@ class ContactUsSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
         subject = 'Thanks for contacting us!'
-        from_email = settings.DEFAULT_FROM_EMAIL
+        from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         context = {'name': instance.name}
         text_content = f"Hi {instance.name},\n\nThanks for reaching out. We'll respond to your message shortly."
@@ -71,7 +71,7 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
         subject = 'Thanks for joining our partner network'
-        from_email = settings.DEFAULT_FROM_EMAIL
+        from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         context = {'name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as a partner!"
@@ -95,7 +95,7 @@ class InvestorRegistrationSerializer(serializers.ModelSerializer):
 
         # Prepare email content
         subject = 'Thank you for registering as an investor'
-        from_email = settings.DEFAULT_FROM_EMAIL
+        from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         context = {'first_name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nThank you for registering as an investor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
@@ -121,7 +121,7 @@ class EntrepreneurSerializer(serializers.ModelSerializer):
 
         # Prepare email content
         subject = 'Thank you for registering as an investor'
-        from_email = settings.DEFAULT_FROM_EMAIL
+        from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         context = {'first_name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nThank you for registering as an investor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"

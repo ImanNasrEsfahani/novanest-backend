@@ -16,15 +16,7 @@ services:
       - db
     env_file:
       - .env
-    environment:
-      - DEBUG=True
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
-      - DB_NAME=novanest_db
-      - DB_USER=novanest_user
-      - DB_PASSWORD=securepassword
-      - DB_HOST=db
-      - DB_PORT=3306
-
+      
   db:
     container_name: novanest-db
     image: mysql:8.0

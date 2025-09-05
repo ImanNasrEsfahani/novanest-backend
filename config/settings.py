@@ -13,6 +13,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+
+def env_bool(key, default=False):
+    val = os.environ.get(key)
+    if val is None:
+        return default
+    return str(val).lower() in ("1", "true", "yes", "on")
+
+
+def env_list(key, default=None, sep=","):
+    val = os.environ.get(key)
+    if val is None:
+        return default or []
+    return [p.strip() for p in val.split(sep) if p.strip()]
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,10 +36,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ike^dq05jto0^8ap4710wwr0-ige+r&#wd$6hi28ec4jwqgtj2'
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-only-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -93,8 +108,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": os.environ.get("DB_ENGINE","django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("DB_USER",""),
+        "PASSWORD": os.environ.get("DB_PASSWORD",""),
+        "HOST": os.environ.get("DB_HOST",""),
+        "PORT": os.environ.get("DB_PORT",""),
     }
 }
 
@@ -121,15 +140,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE","en-us")
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.environ.get("TIME_ZONE","UTC")
 
-USE_I18N = True
+USE_I18N = env_bool("USE_I18N", default=True)
 
-USE_TZ = True
+USE_TZ = env_bool("USE_TZ", default=True)
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = env_bool("CORS_ALLOW_ALL_ORIGINS", default=True)
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -152,21 +171,16 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-]
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-]
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-]
+DEFAULT_ORIGINS = ['http://localhost:3000']
+CORS_ORIGIN_WHITELIST = env_list('CORS_ORIGIN_WHITELIST', default=DEFAULT_ORIGINS)
+CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS', default=DEFAULT_ORIGINS)
+CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS', default=DEFAULT_ORIGINS)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 
-STATIC_URL = 'static/'
+STATIC_URL = os.environ.get("STATIC_URL", "static/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -189,19 +203,11 @@ REST_FRAMEWORK = {
     ]
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.office365.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')            # e.g. 'no-reply@yourdomain.com'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
-
 # Microsoft Graph (optional OAuth2 mail sending)
 MS_GRAPH_TENANT_ID = os.environ.get('MS_GRAPH_TENANT_ID')
 MS_GRAPH_CLIENT_ID = os.environ.get('MS_GRAPH_CLIENT_ID')
 MS_GRAPH_CLIENT_SECRET = os.environ.get('MS_GRAPH_CLIENT_SECRET')
-MS_GRAPH_SENDER = os.environ.get('MS_GRAPH_SENDER', DEFAULT_FROM_EMAIL)
+MS_GRAPH_SENDER = os.environ.get('MS_GRAPH_SENDER', "info@landatrip.com")
 MS_GRAPH_USE = all([
     MS_GRAPH_TENANT_ID,
     MS_GRAPH_CLIENT_ID,
