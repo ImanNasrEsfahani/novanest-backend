@@ -65,5 +65,5 @@ junit.xml
 test-results/
 
 # Migrations (optional, if you regenerate them often)
-**/migrations/*.py
-**/migrations/*.pyc
+# **/migrations/*.py
+# **/migrations/*.pyc
