@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   web:
-    container_name: novanest-api
+    container_name: nova-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -17,19 +17,19 @@ services:
     env_file:
       - .env
       
-  db:
-    container_name: novanest-db
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: novanest_db
-      MYSQL_USER: novanest_user
-      MYSQL_PASSWORD: securepassword
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
+#   db:
+#     container_name: novanest-db
+#     image: mysql:8.0
+#     restart: always
+#     environment:
+#       MYSQL_DATABASE: novanest_db
+#       MYSQL_USER: novanest_user
+#       MYSQL_PASSWORD: securepassword
+#       MYSQL_ROOT_PASSWORD: rootpassword
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - db_data:/var/lib/mysql
 
-volumes:
-  db_data:
+# volumes:
+#   db_data:
