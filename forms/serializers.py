@@ -2,6 +2,7 @@ from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistratio
 from rest_framework import serializers
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from .graph_mail import send_graph_mail
 from django.conf import settings
 import logging
 
@@ -28,13 +29,14 @@ class StartupFormSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName},\n\nThanks for registering your startup with us."
         html_content = render_to_string('startup_registration_email.html', context)
 
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-
-        try:
-            email.send()
-        except Exception as e:
-            logger.error(f"Failed to send registration email: {e}")
+        # Try Graph first
+        if not send_graph_mail(subject, 'startup_registration_email.html', context, [to_email], text_content):
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email.attach_alternative(html_content, "text/html")
+            try:
+                email.send()
+            except Exception as e:
+                logger.error(f"Failed to send startup registration email (SMTP fallback): {e}")
 
         return instance
     
@@ -53,9 +55,10 @@ class ContactUsSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.name},\n\nThanks for reaching out. We'll respond to your message shortly."
         html_content = render_to_string('contact_us_email.html', context)
 
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        if not send_graph_mail(subject, 'contact_us_email.html', context, [to_email], text_content):
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email.attach_alternative(html_content, "text/html")
+            email.send()
 
         return instance
 
@@ -74,9 +77,10 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as a partner!"
         html_content = render_to_string('partner_membership_email.html', context)
 
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        if not send_graph_mail(subject, 'partner_membership_email.html', context, [to_email], text_content):
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email.attach_alternative(html_content, "text/html")
+            email.send()
 
         return instance
     
@@ -98,9 +102,10 @@ class InvestorRegistrationSerializer(serializers.ModelSerializer):
         html_content = render_to_string('investor_registration_email.html', context)
 
         # Create and send email
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        if not send_graph_mail(subject, 'investor_registration_email.html', context, [to_email], text_content):
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email.attach_alternative(html_content, "text/html")
+            email.send()
 
         return instance
     
@@ -123,9 +128,10 @@ class EntrepreneurSerializer(serializers.ModelSerializer):
         html_content = render_to_string('Entrepreneur_registration_email.html', context)
 
         # Create and send email
-        email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+        if not send_graph_mail(subject, 'Entrepreneur_registration_email.html', context, [to_email], text_content):
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email.attach_alternative(html_content, "text/html")
+            email.send()
 
         return instance
     

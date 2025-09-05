@@ -8,3 +8,4 @@ django-filter
 django-rest-knox
 mysqlclient
 requests
+msal
