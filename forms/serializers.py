@@ -77,7 +77,7 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
                     'first_name': instance.firstName,
                     'last_name': instance.lastName,
                     'email': instance.email,
-                    'phone_number': instance.phone_number,
+                    'phone_number': instance.phoneNumber,
                     'country': instance.countryOfResidence,
                     'how_did_you_know': instance.howDidYouKnowUs,
                     'created_at': instance.createdAt,
