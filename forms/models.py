@@ -50,12 +50,9 @@ class ContactUs(models.Model):
 class PartnerMembership(models.Model):
   firstName=models.CharField(max_length=500, blank=True)
   lastName=models.CharField(max_length=500, blank=True)
-  birthDate=models.DateField(blank=True)
   email=models.EmailField(blank=True)
+  phone_number=models.CharField(max_length=15, blank=True)
   countryOfResidence=models.CharField(max_length=500, blank=True)
-  provinceOfResidence=models.CharField(max_length=500, blank=True)
-  companyName=models.CharField(max_length=500, blank=True)
-  investmentCeiling=models.CharField(max_length=500, blank=True)
   howDidYouKnowUs=models.CharField(max_length=500, blank=True)
   createdAt=models.DateTimeField(auto_now_add=True, blank=True)     
   updatedAt=models.DateTimeField(auto_now=True, blank=True)

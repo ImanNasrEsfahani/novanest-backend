@@ -76,11 +76,9 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
         context = {
                     'first_name': instance.firstName,
                     'last_name': instance.lastName,
-                    'company_name': instance.companyName,
                     'email': instance.email,
+                    'phone_number': instance.phone_number,
                     'country': instance.countryOfResidence,
-                    'province': instance.provinceOfResidence,
-                    'investment_ceiling': instance.investmentCeiling,
                     'how_did_you_know': instance.howDidYouKnowUs,
                     'created_at': instance.createdAt,
                 }
