@@ -74,14 +74,19 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         context = {
-                    'first_name': instance.firstName,
-                    'last_name': instance.lastName,
-                    'email': instance.email,
-                    'phone_number': instance.phoneNumber,
-                    'country': instance.countryOfResidence,
-                    'how_did_you_know': instance.howDidYouKnowUs,
-                    'created_at': instance.createdAt,
-                }
+                'first_name': instance.firstName,
+                'last_name': instance.lastName,
+                'email': instance.email,
+                'phone_number': instance.phoneNumber,
+                'country': instance.countryOfResidence,
+                'city': instance.cityOfResidence,
+                'company_name': instance.companyName,
+                'website': instance.websiteAddress,
+                'linkedin': instance.linkedinAddress,
+                'brief_intro': instance.briefIntroduction,
+                'how_did_you_know': instance.howDidYouKnowUs,
+                'created_at': instance.createdAt,
+            }
         text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as a partner!"
         html_content = render_to_string('partner_membership_email.html', context)
 
