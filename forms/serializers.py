@@ -9,6 +9,7 @@ from django.core.files.base import ContentFile
 import logging
 import os
 import mimetypes
+import secrets, string
 
 logger = logging.getLogger(__name__)
 
@@ -199,35 +200,24 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get('request')
         uploaded = getattr(request, 'FILES', {}).get('cvFile')
-        saved_path = None
-        if uploaded:
-            # unique path example
-            name = f"team_cv/{uploaded.name}"
-            saved_path = default_storage.save(name, ContentFile(uploaded.read()))
-
-        # remove cvFile from validated_data if present to avoid unexpected keys
-        if uploaded and 'cvFile' not in validated_data:
-            # save instance first
-            instance = super().create(validated_data)
-            # set FileField on instance (assumes TeamRegistration.cvFile exists)
-            instance.cvFile = uploaded
-            instance.save(update_fields=['cvFile'])
-        else:
-            instance = super().create(validated_data)
-
-        # get request.FILES safely and log
-        try:
-            req_files = getattr(request, 'FILES', {}) or {}
-        except Exception:
-            req_files = {}
-        logger.debug("TeamRegistration.create: request.FILES keys=%s validated_data_keys=%s",
-                     list(req_files.keys()), list(validated_data.keys()))
-
-        cv_file = getattr(instance, 'cvFile', None)
-        cv_present = bool(cv_file)
         
-        logger.debug("TeamRegistration.create: cv_file %s", cv_file)
-        logger.debug("TeamRegistration.create: cv_present %s", cv_present)
+        saved_path = None
+        uploaded_content = None
+        if uploaded:
+            uploaded_content = uploaded.read()
+
+            _, ext = os.path.splitext(getattr(uploaded, 'name', '') or '')
+            ext = ext.lower() if ext else ''
+
+            alphabet = string.ascii_letters + string.digits
+            rand_name = ''.join(secrets.choice(alphabet) for _ in range(15))
+
+            filename = f"team_cv/{rand_name}{ext}"
+            saved_path = default_storage.save(filename, ContentFile(uploaded_content))
+
+        instance = super().create(validated_data)
+
+        cv_present = bool(uploaded)
 
         context = {
             'first_name': instance.firstName,
@@ -243,7 +233,6 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             'created_at': instance.createdAt,
             
             'cv_present': cv_present,
-            'cv_filename': os.path.basename(cv_file.name) if cv_present else None,
         }
 
         subject = 'Thank you for registering to join our team'
@@ -260,22 +249,12 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             # attach CV file if present on the instance (SMTP fallback)
             if cv_present:
                 try:
-                    # ensure file is open
-                    try:
-                        cv_file.open(mode='rb')
-                    except Exception:
-                        pass
-                    filename = os.path.basename(cv_file.name)
-                    content = cv_file.read()
+                    filename = "resume"
+                    content = uploaded_content
                     ctype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
                     email.attach(filename, content, ctype)
                 except Exception as e:
                     logger.exception("Failed to attach CV file to email: %s", e)
-                finally:
-                    try:
-                        cv_file.close()
-                    except Exception:
-                        pass
 
             try:
                 email.send()

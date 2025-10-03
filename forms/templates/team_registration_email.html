@@ -15,7 +15,6 @@
         <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
         <tr><td><strong>Type of Collaboration</strong></td><td>{{ type_of_collaboration|default:"—" }}</td></tr>
         <tr><td><strong>Field of Expert</strong></td><td>{{ field_of_expert|default:"—" }}</td></tr>
-        <tr><td><strong>CV File</strong></td><td>{% if cv_filename %}{{ cv_filename }}{% else %}Attached{% endif %}</td></tr>
         <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
     </table>
     {% else %}
