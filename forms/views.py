@@ -3,7 +3,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from django.middleware.csrf import get_token
 from rest_framework.response import Response
-from rest_framework.parsers import FormParser,MultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration,MentorRegistration,TeamRegistration,Entrepreneur
 from .serializers import StartupFormSerializer,ContactUsSerializer,PartnerMembershipSerializer,InvestorRegistrationSerializer, MentorRegistrationSerializer, TeamRegistrationSerializer, EntrepreneurSerializer
 # Create your views here.
@@ -37,6 +37,7 @@ class JoinAsMentorView(CreateAPIView):
 class JoinOurTeamView(CreateAPIView):
     queryset = TeamRegistration.objects.all()
     serializer_class = TeamRegistrationSerializer
+    parser_classes = [JSONParser, FormParser, MultiPartParser]  # accept JSON and file uploads
     http_method_names = ['post']
 
 class EntrepreneurView(CreateAPIView):

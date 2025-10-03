@@ -154,6 +154,44 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id','createdAt']
 
+    def validate(self, data):
+        """
+        Conditional validation depending on presence of cvFile in request.FILES or initial_data.
+        - If cvFile is present: require cvFile, firstName, lastName, email, phoneNumber,
+          TypeOfCollaboration, FieldOfExpert
+        - If cvFile not present: require firstName, lastName, email, phoneNumber,
+          TypeOfCollaboration, FieldOfExpert, birthDate, educationField, educationLevel, workHistorySummary
+        """
+        request = self.context.get('request')
+        initial = getattr(self, 'initial_data', {}) or {}
+        files = getattr(request, 'FILES', {}) if request is not None else {}
+        has_cv = bool(files.get('cvFile') or initial.get('cvFile'))
+
+        required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'TypeOfCollaboration', 'FieldOfExpert']
+        required_extra = ['birthDate', 'educationField', 'educationLevel', 'workHistorySummary']
+
+        missing = {}
+        # check file separately
+        if has_cv:
+            if not (files.get('cvFile') or initial.get('cvFile')):
+                missing['cvFile'] = 'cvFile is required when uploading a CV.'
+
+        # choose required set
+        required = required_base + ( [] if has_cv else required_extra )
+
+        for key in required:
+            # look in validated data first then raw initial_data
+            val = data.get(key) if isinstance(data, dict) else None
+            if val in [None, '']:
+                val = initial.get(key, None)
+            if val in [None, '']:
+                missing[key] = 'This field is required.'
+
+        if missing:
+            raise serializers.ValidationError(missing)
+
+        return data
+
     def create(self, validated_data):
         instance = super().create(validated_data)
 
