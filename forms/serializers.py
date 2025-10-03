@@ -198,27 +198,26 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         # build a full context with both snake_case and camelCase keys so template is resilient
+        
+        request = self.context.get('request', None)
+        req_files = {}
+        try:
+            req_files = getattr(request, 'FILES', {}) or {}
+        except Exception:
+            req_files = {}
+        logger.debug("TeamRegistration.create: request.FILES keys=%s validated_data_keys=%s",
+                     list(req_files.keys()), list(validated_data.keys()))
+
         cv_file = getattr(instance, 'cvFile', None)
         cv_present = bool(cv_file)
+        
+        logger.debug("TeamRegistration.create: cv_file %s", cv_file)
+        logger.debug("TeamRegistration.create: cv_present %s", cv_present)
 
         context = {
-            # camelCase (model fields)
-            'firstName': instance.firstName,
-            'lastName': instance.lastName,
-            'email': instance.email,
-            'phoneNumber': instance.phoneNumber,
-            'TypeOfCollaboration': instance.TypeOfCollaboration,
-            'FieldOfExpert': instance.FieldOfExpert,
-            'birthDate': instance.birthDate,
-            'educationLevel': instance.educationLevel,
-            'educationField': instance.educationField,
-            'workHistorySummary': instance.workHistorySummary,
-            'createdAt': instance.createdAt,
-            'cv_present': cv_present,
-            'cv_filename': os.path.basename(cv_file.name) if cv_present else None,
-            # snake_case duplicates for templates that use that style
             'first_name': instance.firstName,
             'last_name': instance.lastName,
+            'email': instance.email,
             'phone_number': instance.phoneNumber,
             'type_of_collaboration': instance.TypeOfCollaboration,
             'field_of_expert': instance.FieldOfExpert,
@@ -227,6 +226,9 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             'education_field': instance.educationField,
             'work_history_summary': instance.workHistorySummary,
             'created_at': instance.createdAt,
+            
+            'cv_present': cv_present,
+            'cv_filename': os.path.basename(cv_file.name) if cv_present else None,
         }
 
         subject = 'Thank you for registering to join our team'

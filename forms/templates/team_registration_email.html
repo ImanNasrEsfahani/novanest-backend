@@ -13,8 +13,8 @@
         <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
         <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
         <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
-        <tr><td><strong>Type of Collaboration</strong></td><td>{{ type_of_collaboration|default:TypeOfCollaboration|default:"—" }}</td></tr>
-        <tr><td><strong>Field of Expert</strong></td><td>{{ field_of_expert|default:FieldOfExpert|default:"—" }}</td></tr>
+        <tr><td><strong>Type of Collaboration</strong></td><td>{{ type_of_collaboration|default:"—" }}</td></tr>
+        <tr><td><strong>Field of Expert</strong></td><td>{{ field_of_expert|default:"—" }}</td></tr>
         <tr><td><strong>CV File</strong></td><td>{% if cv_filename %}{{ cv_filename }}{% else %}Attached{% endif %}</td></tr>
         <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
     </table>
@@ -23,12 +23,12 @@
         <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
         <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
         <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
-        <tr><td><strong>Type of Collaboration</strong></td><td>{{ type_of_collaboration|default:TypeOfCollaboration|default:"—" }}</td></tr>
-        <tr><td><strong>Field of Expert</strong></td><td>{{ field_of_expert|default:FieldOfExpert|default:"—" }}</td></tr>
-        <tr><td><strong>Birth Date</strong></td><td>{{ birth_date|default:birthDate|default:"—" }}</td></tr>
-        <tr><td><strong>Education Field</strong></td><td>{{ education_field|default:educationField|default:"—" }}</td></tr>
-        <tr><td><strong>Education Level</strong></td><td>{{ education_level|default:educationLevel|default:"—" }}</td></tr>
-        <tr><td><strong>Work History Summary</strong></td><td>{{ work_history_summary|default:workHistorySummary|default:"—" }}</td></tr>
+        <tr><td><strong>Type of Collaboration</strong></td><td>{{ type_of_collaboration|default:"—" }}</td></tr>
+        <tr><td><strong>Field of Expert</strong></td><td>{{ field_of_expert|default:"—" }}</td></tr>
+        <tr><td><strong>Birth Date</strong></td><td>{{ birth_date|default:"—" }}</td></tr>
+        <tr><td><strong>Education Field</strong></td><td>{{ education_field|default:"—" }}</td></tr>
+        <tr><td><strong>Education Level</strong></td><td>{{ education_level|default:"—" }}</td></tr>
+        <tr><td><strong>Work History Summary</strong></td><td>{{ work_history_summary|default:"—" }}</td></tr>
         <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
     </table>
     {% endif %}
