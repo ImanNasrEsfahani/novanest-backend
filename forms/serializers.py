@@ -4,6 +4,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from .graph_mail import send_graph_mail
 from django.conf import settings
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 import logging
 import os
 import mimetypes
@@ -195,12 +197,25 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        instance = super().create(validated_data)
+        request = self.context.get('request')
+        uploaded = getattr(request, 'FILES', {}).get('cvFile')
+        saved_path = None
+        if uploaded:
+            # unique path example
+            name = f"team_cv/{uploaded.name}"
+            saved_path = default_storage.save(name, ContentFile(uploaded.read()))
 
-        # build a full context with both snake_case and camelCase keys so template is resilient
-        
-        request = self.context.get('request', None)
-        req_files = {}
+        # remove cvFile from validated_data if present to avoid unexpected keys
+        if uploaded and 'cvFile' not in validated_data:
+            # save instance first
+            instance = super().create(validated_data)
+            # set FileField on instance (assumes TeamRegistration.cvFile exists)
+            instance.cvFile = uploaded
+            instance.save(update_fields=['cvFile'])
+        else:
+            instance = super().create(validated_data)
+
+        # get request.FILES safely and log
         try:
             req_files = getattr(request, 'FILES', {}) or {}
         except Exception:
@@ -294,4 +309,3 @@ class EntrepreneurSerializer(serializers.ModelSerializer):
             email.send()
 
         return instance
-    
