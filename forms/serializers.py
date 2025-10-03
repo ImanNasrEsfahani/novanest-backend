@@ -251,7 +251,7 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
              if cv_present:
                 ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
                 logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
-                email.attach(saved_filename, uploaded_content, ctype)
+                # email.attach(saved_filename, uploaded_content, ctype)
                 
                 sample_name = "sample.txt"
                 sample_bytes = b"Sample attachment content\nThank you,\nTeam Platform"
