@@ -6,6 +6,7 @@ from .graph_mail import send_graph_mail
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from .utils import save_request_file
 import logging
 import os
 import mimetypes
@@ -199,25 +200,23 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        uploaded = getattr(request, 'FILES', {}).get('cvFile')
         
+        # check file is available in the request
+        files = getattr(request, 'FILES', {}) or {}
         saved_path = None
+        saved_filename = None
         uploaded_content = None
-        if uploaded:
-            uploaded_content = uploaded.read()
-
-            _, ext = os.path.splitext(getattr(uploaded, 'name', '') or '')
-            ext = ext.lower() if ext else ''
-
-            alphabet = string.ascii_letters + string.digits
-            rand_name = ''.join(secrets.choice(alphabet) for _ in range(15))
-
-            filename = f"team_cv/{rand_name}{ext}"
-            saved_path = default_storage.save(filename, ContentFile(uploaded_content))
-
+        if 'cvFile' in files and files['cvFile']:
+            saved_path, saved_filename, uploaded_content = save_request_file(
+                request=request,
+                field_name='cvFile',
+                storage_dir='team_cv',
+                random_length=15
+            )
+            
         instance = super().create(validated_data)
 
-        cv_present = bool(uploaded)
+        cv_present = bool(uploaded_content)
 
         context = {
             'first_name': instance.firstName,
@@ -249,10 +248,8 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             # attach CV file if present on the instance (SMTP fallback)
             if cv_present:
                 try:
-                    filename = "resume"
-                    content = uploaded_content
-                    ctype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-                    email.attach(filename, content, ctype)
+                    ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
+                    email.attach(saved_filename, uploaded_content, ctype)
                 except Exception as e:
                     logger.exception("Failed to attach CV file to email: %s", e)
 
