@@ -7,6 +7,21 @@
 <body>
     <p>Hi {{ first_name }},</p>
     <p>Thank you for registering as an investor. We appreciate your interest and will get back to you shortly.</p>
+
+    <table cellpadding="6" cellspacing="0" border="0">
+        <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
+        <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
+        <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
+        <tr><td><strong>Country</strong></td><td>{{ country|default:"—" }}</td></tr>
+        <tr><td><strong>City</strong></td><td>{{ city|default:"—" }}</td></tr>
+        <tr><td><strong>Company Name</strong></td><td>{{ company_name|default:"—" }}</td></tr>
+        <tr><td><strong>Website address</strong></td><td>{{ website|default:"—" }}</td></tr>
+        <tr><td><strong>Linkedin address</strong></td><td>{{ linkedin|default:"—" }}</td></tr>
+        <tr><td><strong>Brief Introduction</strong></td><td>{{ brief_introduction|default:"—" }}</td></tr>
+        <tr><td><strong>How did you hear about us?</strong></td><td>{{ how_did_you_know|default:"—" }}</td></tr>
+        <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
+    </table>
+
     <p>Best regards,<br>The Investment Platform Team</p>
 </body>
 </html>
