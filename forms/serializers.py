@@ -5,6 +5,8 @@ from django.template.loader import render_to_string
 from .graph_mail import send_graph_mail
 from django.conf import settings
 import logging
+import os
+import mimetypes
 
 logger = logging.getLogger(__name__)
 
@@ -195,19 +197,73 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
 
-        # Prepare email content
+        # build a full context with both snake_case and camelCase keys so template is resilient
+        cv_file = getattr(instance, 'cvFile', None)
+        cv_present = bool(cv_file)
+
+        context = {
+            # camelCase (model fields)
+            'firstName': instance.firstName,
+            'lastName': instance.lastName,
+            'email': instance.email,
+            'phoneNumber': instance.phoneNumber,
+            'TypeOfCollaboration': instance.TypeOfCollaboration,
+            'FieldOfExpert': instance.FieldOfExpert,
+            'birthDate': instance.birthDate,
+            'educationLevel': instance.educationLevel,
+            'educationField': instance.educationField,
+            'workHistorySummary': instance.workHistorySummary,
+            'createdAt': instance.createdAt,
+            'cv_present': cv_present,
+            'cv_filename': os.path.basename(cv_file.name) if cv_present else None,
+            # snake_case duplicates for templates that use that style
+            'first_name': instance.firstName,
+            'last_name': instance.lastName,
+            'phone_number': instance.phoneNumber,
+            'type_of_collaboration': instance.TypeOfCollaboration,
+            'field_of_expert': instance.FieldOfExpert,
+            'birth_date': instance.birthDate,
+            'education_level': instance.educationLevel,
+            'education_field': instance.educationField,
+            'work_history_summary': instance.workHistorySummary,
+            'created_at': instance.createdAt,
+        }
+
         subject = 'Thank you for registering to join our team'
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
-        context = {'first_name': instance.firstName}
         text_content = f"Hi {instance.firstName},\n\nThank you for registering to join our team. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Team Platform Team"
         html_content = render_to_string('team_registration_email.html', context)
 
-        # Create and send email
+        # Try Graph first (existing helper). If it doesn't handle attachments, fallback SMTP will attach.
         if not send_graph_mail(subject, 'team_registration_email.html', context, [to_email], text_content):
             email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
             email.attach_alternative(html_content, "text/html")
-            email.send()
+
+            # attach CV file if present on the instance (SMTP fallback)
+            if cv_present:
+                try:
+                    # ensure file is open
+                    try:
+                        cv_file.open(mode='rb')
+                    except Exception:
+                        pass
+                    filename = os.path.basename(cv_file.name)
+                    content = cv_file.read()
+                    ctype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+                    email.attach(filename, content, ctype)
+                except Exception as e:
+                    logger.exception("Failed to attach CV file to email: %s", e)
+                finally:
+                    try:
+                        cv_file.close()
+                    except Exception:
+                        pass
+
+            try:
+                email.send()
+            except Exception as e:
+                logger.error(f"Failed to send team registration email (SMTP fallback): {e}")
 
         return instance
     
