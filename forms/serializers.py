@@ -240,25 +240,40 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName},\n\nThank you for registering to join our team. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Team Platform Team"
         html_content = render_to_string('team_registration_email.html', context)
 
+        # Prepare attachments for Graph
+        attachments = []
+        if cv_present:
+            ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
+            logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
+            attachments.append((saved_filename, uploaded_content, ctype))
+        
         # Try Graph first (existing helper). If it doesn't handle attachments, fallback SMTP will attach.
         # If we have a CV, force SMTP fallback so we can attach the file here.
-        use_smtp_fallback = cv_present or (not send_graph_mail(subject, 'team_registration_email.html', context, [to_email], text_content))
+        # Try Graph with attachments
+        use_smtp_fallback = not send_graph_mail(
+            subject, 
+            'team_registration_email.html', 
+            context, 
+            [to_email], 
+            text_content,
+            attachments=attachments if attachments else None
+        )
+    
         if use_smtp_fallback:
-             email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-             email.attach_alternative(html_content, "text/html")
- 
-             # attach CV file if present on the instance (SMTP fallback)
-             if cv_present:
+            from django.core.mail import EmailMultiAlternatives
+            from django.template.loader import render_to_string
+            
+            html_content = render_to_string('team_registration_email.html', context)
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email.attach_alternative(html_content, "text/html")
+
+            # attach CV file if present
+            if cv_present:
                 ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
+                email.attach(saved_filename, uploaded_content, ctype)
                 logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
-                # email.attach(saved_filename, uploaded_content, ctype)
                 
-                sample_name = "sample.txt"
-                sample_bytes = b"Sample attachment content\nThank you,\nTeam Platform"
-                email.attach(sample_name, sample_bytes, "text/plain")
-                logger.debug("Attached sample file for %s: filename=%s", to_email, sample_name)
-                
-                email.send()
+            email.send()
  
         return instance
     

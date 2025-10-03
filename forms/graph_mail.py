@@ -4,6 +4,9 @@ import msal
 from django.conf import settings
 from django.template.loader import render_to_string
 from typing import Sequence, Optional
+import base64
+import mimetypes
+from msal import ConfidentialClientApplication
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +36,7 @@ def _get_access_token() -> Optional[str]:
     return result['access_token']
 
 
-def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: Sequence[str], text_fallback: Optional[str] = None) -> bool:
+def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: Sequence[str], text_fallback: Optional[str] = None, attachments=None) -> bool:
     """Send an email via Microsoft Graph. Returns True on success."""
     if not settings.MS_GRAPH_USE:
         logger.debug("MS Graph not configured; skipping Graph send.")
@@ -57,6 +60,16 @@ def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: 
         },
         "saveToSentItems": True,
     }
+    # Add attachments if present
+    if attachments:
+        payload["message"]["attachments"] = []
+        for filename, content_bytes, content_type in attachments:
+            payload["message"]["attachments"].append({
+                "@odata.type": "#microsoft.graph.fileAttachment",
+                "name": filename,
+                "contentType": content_type,
+                "contentBytes": base64.b64encode(content_bytes).decode('utf-8')
+            })
     resp = requests.post(
         "https://graph.microsoft.com/v1.0/users/{}/sendMail".format(settings.MS_GRAPH_SENDER),
         headers={"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"},
