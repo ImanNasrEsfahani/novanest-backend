@@ -241,23 +241,25 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         html_content = render_to_string('team_registration_email.html', context)
 
         # Try Graph first (existing helper). If it doesn't handle attachments, fallback SMTP will attach.
-        if not send_graph_mail(subject, 'team_registration_email.html', context, [to_email], text_content):
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-            email.attach_alternative(html_content, "text/html")
-
-            # attach CV file if present on the instance (SMTP fallback)
-            if cv_present:
-                try:
-                    ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
-                    email.attach(saved_filename, uploaded_content, ctype)
-                except Exception as e:
-                    logger.exception("Failed to attach CV file to email: %s", e)
-
-            try:
+        # If we have a CV, force SMTP fallback so we can attach the file here.
+        use_smtp_fallback = cv_present or (not send_graph_mail(subject, 'team_registration_email.html', context, [to_email], text_content))
+        if use_smtp_fallback:
+             email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+             email.attach_alternative(html_content, "text/html")
+ 
+             # attach CV file if present on the instance (SMTP fallback)
+             if cv_present:
+                ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
+                email.attach(saved_filename, uploaded_content, ctype)
+                logger.debug("Attached CV for %s: filename=%s size=%d type=%s", to_email, saved_filename, len(uploaded_content), ctype)
+                
+                sample_name = "sample.txt"
+                sample_bytes = b"Sample attachment content\nThank you,\nTeam Platform"
+                email.attach(sample_name, sample_bytes, "text/plain")
+                logger.debug("Attached sample file for %s: filename=%s size=%d", to_email, sample_name, len(sample_bytes))
+                
                 email.send()
-            except Exception as e:
-                logger.error(f"Failed to send team registration email (SMTP fallback): {e}")
-
+ 
         return instance
     
 
