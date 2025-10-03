@@ -238,7 +238,6 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         text_content = f"Hi {instance.firstName},\n\nThank you for registering to join our team. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Team Platform Team"
-        html_content = render_to_string('team_registration_email.html', context)
 
         # Prepare attachments for Graph
         attachments = []
@@ -247,8 +246,6 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
             attachments.append((saved_filename, uploaded_content, ctype))
         
-        # Try Graph first (existing helper). If it doesn't handle attachments, fallback SMTP will attach.
-        # If we have a CV, force SMTP fallback so we can attach the file here.
         # Try Graph with attachments
         use_smtp_fallback = not send_graph_mail(
             subject, 
