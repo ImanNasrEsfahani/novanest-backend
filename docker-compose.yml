@@ -16,6 +16,8 @@ services:
     #   - db
     env_file:
       - .env
+    environment:
+      - DJANGO_LOG_LEVEL=DEBUG
       
 #   db:
 #     container_name: novanest-db

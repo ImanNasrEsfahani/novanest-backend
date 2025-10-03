@@ -214,3 +214,27 @@ MS_GRAPH_USE = all([
     MS_GRAPH_CLIENT_SECRET,
     MS_GRAPH_SENDER,
 ])
+
+import os
+LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "DEBUG")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {"format": "%(asctime)s %(levelname)s %(name)s: %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+        },
+    },
+    "root": {"handlers": ["console"], "level": LOG_LEVEL},
+    "loggers": {
+        # keep Django default noisy bits at INFO/ERROR if desired
+        "django": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        # allow your app modules to emit DEBUG to console
+        "": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": True},
+    },
+}
