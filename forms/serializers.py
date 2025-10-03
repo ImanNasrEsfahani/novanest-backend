@@ -250,13 +250,13 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
              # attach CV file if present on the instance (SMTP fallback)
              if cv_present:
                 ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
+                logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
                 email.attach(saved_filename, uploaded_content, ctype)
-                logger.debug("Attached CV for %s: filename=%s size=%d type=%s", to_email, saved_filename, len(uploaded_content), ctype)
                 
                 sample_name = "sample.txt"
                 sample_bytes = b"Sample attachment content\nThank you,\nTeam Platform"
                 email.attach(sample_name, sample_bytes, "text/plain")
-                logger.debug("Attached sample file for %s: filename=%s size=%d", to_email, sample_name, len(sample_bytes))
+                logger.debug("Attached sample file for %s: filename=%s", to_email, sample_name)
                 
                 email.send()
  
