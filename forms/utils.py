@@ -59,7 +59,7 @@ def save_request_file(request, field_name, storage_dir, random_length=15):
     # save to storage
     try:
         saved_path = default_storage.save(storage_path, ContentFile(content))
-        logger.debug("save_request_file: saved_path=%s filename=%s size=%d", saved_path, filename)
+        logger.debug("save_request_file: saved_path=%s filename=%s ", saved_path, filename)
         return saved_path, filename, content
     except Exception:
         logger.exception("save_request_file: failed to save file to storage %s", storage_path)
