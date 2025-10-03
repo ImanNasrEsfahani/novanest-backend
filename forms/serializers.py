@@ -1,4 +1,4 @@
-from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration,MentorRegistration,Entrepreneur
+from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration,MentorRegistration,TeamRegistration,Entrepreneur
 from rest_framework import serializers
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -142,6 +142,31 @@ class MentorRegistrationSerializer(serializers.ModelSerializer):
 
         # Create and send email
         if not send_graph_mail(subject, 'mentor_registration_email.html', context, [to_email], text_content):
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email.attach_alternative(html_content, "text/html")
+            email.send()
+
+        return instance
+    
+class TeamRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamRegistration
+        fields = '__all__'
+        read_only_fields = ['id','createdAt']
+
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+
+        # Prepare email content
+        subject = 'Thank you for registering to join our team'
+        from_email = settings.MS_GRAPH_SENDER
+        to_email = instance.email
+        context = {'first_name': instance.firstName}
+        text_content = f"Hi {instance.firstName},\n\nThank you for registering to join our team. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Team Platform Team"
+        html_content = render_to_string('team_registration_email.html', context)
+
+        # Create and send email
+        if not send_graph_mail(subject, 'team_registration_email.html', context, [to_email], text_content):
             email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
             email.attach_alternative(html_content, "text/html")
             email.send()

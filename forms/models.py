@@ -88,6 +88,20 @@ class MentorRegistration(models.Model):
   createdAt=models.DateTimeField(auto_now_add=True)
   updatedAt=models.DateTimeField(auto_now=True)
 
+class TeamRegistration(models.Model):
+  firstName=models.CharField(max_length=500, blank=True)
+  lastName=models.CharField(max_length=500, blank=True)
+  email=models.EmailField(blank=True)
+  phoneNumber=models.CharField(max_length=20, blank=True)
+  TypeOfCollaboration=models.CharField(max_length=10, blank=True)
+  FieldOfExpert=models.CharField(max_length=10, blank=True)
+  birthDate=models.DateField(blank=True)
+  educationLevel=models.CharField(max_length=50, blank=True)
+  educationField=models.CharField(max_length=300, blank=True)
+  workHistorySummary=models.CharField(max_length=1500, blank=True)
+  createdAt=models.DateTimeField(auto_now_add=True)
+  updatedAt=models.DateTimeField(auto_now=True)
+
 class Entrepreneur(models.Model):
   firstName=models.CharField(max_length=500, blank=True)
   lastName=models.CharField(max_length=500, blank=True)
