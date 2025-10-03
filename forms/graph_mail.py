@@ -60,16 +60,18 @@ def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: 
         },
         "saveToSentItems": True,
     }
+    
     # Add attachments if present
     if attachments:
-        payload["message"]["attachments"] = []
-        for filename, content_bytes, content_type in attachments:
-            payload["message"]["attachments"].append({
-                "@odata.type": "#microsoft.graph.fileAttachment",
-                "name": filename,
-                "contentType": content_type,
-                "contentBytes": base64.b64encode(content_bytes).decode('utf-8')
-            })
+        if len(attachments) > 0:
+            payload["message"]["attachments"] = []
+            for filename, content_bytes, content_type in attachments:
+                payload["message"]["attachments"].append({
+                    "@odata.type": "#microsoft.graph.fileAttachment",
+                    "name": filename,
+                    "contentType": content_type,
+                    "contentBytes": base64.b64encode(content_bytes).decode('utf-8')
+                })
     resp = requests.post(
         "https://graph.microsoft.com/v1.0/users/{}/sendMail".format(settings.MS_GRAPH_SENDER),
         headers={"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"},

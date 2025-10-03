@@ -253,7 +253,7 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             context, 
             [to_email], 
             text_content,
-            attachments=attachments if attachments else None
+            attachments=attachments or None
         )
     
         if use_smtp_fallback:
