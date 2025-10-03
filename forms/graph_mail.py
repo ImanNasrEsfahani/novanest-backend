@@ -62,10 +62,11 @@ def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: 
     }
     
     # Add attachments if present
+    logger.debug("attachments %s", attachments)
     if attachments:
-        logger.error("if attachments")
+        logger.debug("if attachments")
         if len(attachments) > 0:
-            logger.error("attachments %s", attachments)
+            logger.debug("attachments %s", attachments)
             payload["message"]["attachments"] = []
             for filename, content_bytes, content_type in attachments:
                 payload["message"]["attachments"].append({
