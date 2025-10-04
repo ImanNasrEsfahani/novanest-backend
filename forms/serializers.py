@@ -173,7 +173,7 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         files = getattr(request, 'FILES', {}) if request is not None else {}
         has_cv = bool(files.get('cvFile') or initial.get('cvFile'))
 
-        required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'TypeOfCollaboration', 'FieldOfExpert']
+        required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'TypeOfCollaboration', 'FieldOfExpert']
         required_extra = ['birthDate', 'educationField', 'educationLevel', 'workHistorySummary']
 
         missing = {}
@@ -223,6 +223,8 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             'last_name': instance.lastName,
             'email': instance.email,
             'phone_number': instance.phoneNumber,
+            'country_of_residence': instance.countryOfResidence,
+            'city_of_residence': instance.cityOfResidence,
             'type_of_collaboration': instance.TypeOfCollaboration,
             'field_of_expert': instance.FieldOfExpert,
             'birth_date': instance.birthDate,

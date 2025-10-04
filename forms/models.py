@@ -93,6 +93,8 @@ class TeamRegistration(models.Model):
   lastName=models.CharField(max_length=500, blank=True)
   email=models.EmailField(blank=True)
   phoneNumber=models.CharField(max_length=20, blank=True)
+  countryOfResidence=models.CharField(max_length=500, blank=True)
+  cityOfResidence=models.CharField(max_length=500, blank=True)
   TypeOfCollaboration=models.CharField(max_length=10, blank=True)
   FieldOfExpert=models.CharField(max_length=10, blank=True)
   birthDate=models.DateField(null=True, blank=True)
