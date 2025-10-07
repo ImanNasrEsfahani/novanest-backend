@@ -5,7 +5,7 @@ from django.middleware.csrf import get_token
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration,MentorRegistration,TeamRegistration,Entrepreneur
-from .serializers import StartupFormSerializer,ContactUsSerializer,PartnerMembershipSerializer,InvestorRegistrationSerializer, MentorRegistrationSerializer, TeamRegistrationSerializer, EntrepreneurSerializer
+from .serializers import StartupFormSerializer,ContactUsSerializer,PartnerMembershipSerializer,InvestorRegistrationSerializer, MentorRegistrationSerializer, TeamRegistrationSerializer
 # Create your views here.
 
 class StartUpsFormView(CreateAPIView):
