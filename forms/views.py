@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from django.middleware.csrf import get_token
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
-from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration,MentorRegistration,TeamRegistration
-from .serializers import StartupFormSerializer,ContactUsSerializer,PartnerMembershipSerializer,InvestorRegistrationSerializer, MentorRegistrationSerializer, TeamRegistrationSerializer
+from .models import StartUpsForm,ContactUs,AffiliateRegistration,InvestorRegistration,MentorRegistration,TeamRegistration
+from .serializers import StartupFormSerializer,ContactUsSerializer,AffiliateRegistrationSerializer,InvestorRegistrationSerializer, MentorRegistrationSerializer, TeamRegistrationSerializer
 # Create your views here.
 
 class StartUpsFormView(CreateAPIView):
@@ -19,9 +19,9 @@ class ContactUsView(CreateAPIView):
     serializer_class = ContactUsSerializer
     http_method_names = ['post']
 
-class PartnerMembershipView(CreateAPIView):
-    queryset = PartnerMembership.objects.all()
-    serializer_class = PartnerMembershipSerializer
+class AffiliateRegistrationView(CreateAPIView):
+    queryset = AffiliateRegistration.objects.all()
+    serializer_class = AffiliateRegistrationSerializer
     http_method_names = ['post']
 
 class InvestorRegistrationView(CreateAPIView):

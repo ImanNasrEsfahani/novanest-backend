@@ -47,7 +47,7 @@ class ContactUs(models.Model):
   createdAt=models.DateTimeField(auto_now_add=True,blank=True)
 
 
-class PartnerMembership(models.Model):
+class AffiliateRegistration(models.Model):
   firstName=models.CharField(max_length=500, blank=True)
   lastName=models.CharField(max_length=500, blank=True)
   email=models.EmailField(max_length=75, blank=True)

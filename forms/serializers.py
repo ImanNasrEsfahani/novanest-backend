@@ -1,4 +1,4 @@
-from .models import StartUpsForm,ContactUs,PartnerMembership,InvestorRegistration,MentorRegistration,TeamRegistration
+from .models import StartUpsForm,ContactUs,AffiliateRegistration,InvestorRegistration,MentorRegistration,TeamRegistration
 from rest_framework import serializers
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -68,9 +68,9 @@ class ContactUsSerializer(serializers.ModelSerializer):
 
         return instance
 
-class PartnerMembershipSerializer(serializers.ModelSerializer):
+class AffiliateRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PartnerMembership
+        model = AffiliateRegistration
         fields = '__all__'
         read_only_fields = ['id', 'createdAt']
 
@@ -93,10 +93,10 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
                 'how_did_you_know': instance.howDidYouKnowUs,
                 'created_at': instance.createdAt,
             }
-        text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as a partner!"
-        html_content = render_to_string('partner_membership_email.html', context)
+        text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as an affiliate!"
+        html_content = render_to_string('affiliate_registration_email.html', context)
 
-        if not send_graph_mail(subject, 'partner_membership_email.html', context, [to_email], text_content):
+        if not send_graph_mail(subject, 'affiliate_registration_email.html', context, [to_email], text_content):
             email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
             email.attach_alternative(html_content, "text/html")
             email.send()
