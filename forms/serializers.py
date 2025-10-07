@@ -28,7 +28,7 @@ class StartupFormSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
 
-        subject = 'Thank you for registering your startup'
+        subject = 'Your Startup Information Has Been Received by NovaNest'
         from_email = settings.MS_GRAPH_SENDER  # Use configured default sender
         to_email = instance.email
         context = {'first_name': instance.firstName}
@@ -76,7 +76,7 @@ class PartnerMembershipSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = super().create(validated_data)
-        subject = 'Thanks for joining our partner network'
+        subject = 'Your Affiliation Request Has Been Received by NovaNest'
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         context = {
@@ -113,7 +113,7 @@ class InvestorRegistrationSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         # Prepare email content
-        subject = 'Thank you for registering as an investor'
+        subject = 'Thank You For Registering as an Investor'
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         context = {'first_name': instance.firstName}
@@ -139,10 +139,24 @@ class MentorRegistrationSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         # Prepare email content
-        subject = 'Thank you for registering as a mentor'
+        subject = 'Thank You for Your Interest in Joining NovaNest as a Mentor'
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
-        context = {'first_name': instance.firstName}
+        context = {
+            'first_name': instance.firstName,
+            'last_name': instance.lastName,
+            'email': instance.email,
+            'phone_number': instance.phoneNumber,
+            'country_of_residence': instance.countryOfResidence,
+            'city_of_residence': instance.cityOfResidence,
+            'birth_date': instance.birthDate,
+            'website': instance.website,
+            'linkedin': instance.linkedin,
+            'instagram': instance.instagram,
+            'experties_areas': instance.ExpertiesAreas,
+            'how_did_you_know_us': instance.howDidYouKnowUs,
+            'created_at': instance.createdAt,
+        }
         text_content = f"Hi {instance.firstName},\n\nThank you for registering as a mentor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Mentorship Platform Team"
         html_content = render_to_string('mentor_registration_email.html', context)
 
@@ -236,7 +250,7 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             'cv_present': cv_present,
         }
 
-        subject = 'Thank you for registering to join our team'
+        subject = 'Thank You for Registering to Join Our Team'
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
         text_content = f"Hi {instance.firstName},\n\nThank you for registering to join our team. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Team Platform Team"
@@ -274,30 +288,4 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
                 
             email.send()
  
-        return instance
-    
-
-class EntrepreneurSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Entrepreneur
-        fields = '__all__'
-        read_only_fields = ['id','createdAt']
-
-    def create(self, validated_data):
-        instance = super().create(validated_data)
-
-        # Prepare email content
-        subject = 'Thank you for registering as an investor'
-        from_email = settings.MS_GRAPH_SENDER
-        to_email = instance.email
-        context = {'first_name': instance.firstName}
-        text_content = f"Hi {instance.firstName},\n\nThank you for registering as an investor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
-        html_content = render_to_string('Entrepreneur_registration_email.html', context)
-
-        # Create and send email
-        if not send_graph_mail(subject, 'Entrepreneur_registration_email.html', context, [to_email], text_content):
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-            email.attach_alternative(html_content, "text/html")
-            email.send()
-
         return instance

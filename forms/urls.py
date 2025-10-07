@@ -10,6 +10,5 @@ urlpatterns = [
     path('investor-registration',InvestorRegistrationView.as_view(),name='investor-registration'),
     path('join-as-mentor',JoinAsMentorView.as_view(),name='join-as-mentor'),
     path('join-our-team',JoinOurTeamView.as_view(),name='join-our-team'),
-    path('entrepreuneur-form',EntrepreneurView.as_view(),name='entrepreuneur-form'),
     path('get-csrf-token', CSRFTokenView.as_view(), name='get_csrf_token'),
 ]
