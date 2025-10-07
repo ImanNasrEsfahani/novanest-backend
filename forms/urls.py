@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import StartUpsFormView,ContactUsView,PartnerMembershipView,InvestorRegistrationView,JoinAsMentorView,JoinOurTeamView,CSRFTokenView, EntrepreneurView
+from .views import StartUpsFormView,ContactUsView,PartnerMembershipView,InvestorRegistrationView,JoinAsMentorView,JoinOurTeamView,CSRFTokenView
 
 
 app_name = "forms"

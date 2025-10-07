@@ -24,22 +24,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Entrepreneur',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('firstName', models.CharField(blank=True, max_length=500)),
-                ('lastName', models.CharField(blank=True, max_length=500)),
-                ('email', models.EmailField(blank=True, max_length=254)),
-                ('birthDate', models.DateField(blank=True)),
-                ('countryOfResidence', models.CharField(blank=True, max_length=500)),
-                ('provinceOfResidence', models.CharField(blank=True, max_length=500)),
-                ('companyName', models.CharField(blank=True, max_length=500)),
-                ('investmentCeiling', models.CharField(blank=True, max_length=500)),
-                ('preferredAreas', models.CharField(blank=True, max_length=500)),
-                ('howDidYouKnowUs', models.CharField(blank=True, max_length=500)),
-            ],
-        ),
-        migrations.CreateModel(
             name='InvestorRegistration',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
