@@ -87,10 +87,10 @@ class AffiliateRegistrationSerializer(serializers.ModelSerializer):
                 'country': instance.countryOfResidence,
                 'city': instance.cityOfResidence,
                 'company_name': instance.companyName,
-                'website': instance.websiteAddress,
-                'linkedin': instance.linkedinAddress,
-                'brief_intro': instance.briefIntroduction,
-                'how_did_you_know': instance.howDidYouKnowUs,
+                'website': instance.website,
+                'linkedin': instance.linkedin,
+                'brief_introduction': instance.briefIntroduction,
+                'how_did_you_know_us': instance.howDidYouKnowUs,
                 'created_at': instance.createdAt,
             }
         text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as an affiliate!"
