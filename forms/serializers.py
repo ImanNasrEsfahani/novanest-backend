@@ -37,7 +37,7 @@ class StartupFormSerializer(serializers.ModelSerializer):
 
         # Try Graph first
         if not send_graph_mail(subject, 'startup_registration_email.html', context, [to_email], text_content):
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             try:
                 email.send()
@@ -62,7 +62,7 @@ class ContactUsSerializer(serializers.ModelSerializer):
         html_content = render_to_string('contact_us_email.html', context)
 
         if not send_graph_mail(subject, 'contact_us_email.html', context, [to_email], text_content):
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
 
@@ -97,7 +97,7 @@ class AffiliateRegistrationSerializer(serializers.ModelSerializer):
         html_content = render_to_string('affiliate_registration_email.html', context)
 
         if not send_graph_mail(subject, 'affiliate_registration_email.html', context, [to_email], text_content):
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
 
@@ -122,7 +122,7 @@ class InvestorRegistrationSerializer(serializers.ModelSerializer):
 
         # Create and send email
         if not send_graph_mail(subject, 'investor_registration_email.html', context, [to_email], text_content):
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
 
@@ -162,7 +162,7 @@ class MentorRegistrationSerializer(serializers.ModelSerializer):
 
         # Create and send email
         if not send_graph_mail(subject, 'mentor_registration_email.html', context, [to_email], text_content):
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
 
@@ -273,11 +273,10 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         )
     
         if use_smtp_fallback:
-            from django.core.mail import EmailMultiAlternatives
             from django.template.loader import render_to_string
             
             html_content = render_to_string('team_registration_email.html', context)
-            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            email = EmailMultiAlternatives(subject, text_content, from_email, [to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
 
             # attach CV file if present

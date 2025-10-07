@@ -215,6 +215,10 @@ MS_GRAPH_USE = all([
     MS_GRAPH_SENDER,
 ])
 
+# optional CC and BCC alternative
+ALTERNATIVE_CC_EMAILS = env_list("ALTERNATIVE_CC_EMAILS")
+ALTERNATIVE_BCC_EMAILS = env_list("ALTERNATIVE_BCC_EMAILS")
+
 import os
 LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "DEBUG")
 
