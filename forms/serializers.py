@@ -15,10 +15,10 @@ import secrets, string
 logger = logging.getLogger(__name__)
 
 class StartupFormSerializer(serializers.ModelSerializer):
-    financialModelFile = serializers.FileField(required=False)
-    financialFile = serializers.FileField(required=False)
     pitchDeckFile = serializers.FileField(required=False)
     businessPlanFile = serializers.FileField(required=False)
+    financialModelFile = serializers.FileField(required=False)
+    financialFile = serializers.FileField(required=False)
 
     class Meta:
         model = StartUpsForm
@@ -31,7 +31,49 @@ class StartupFormSerializer(serializers.ModelSerializer):
         subject = 'Your Startup Information Has Been Received by NovaNest'
         from_email = settings.MS_GRAPH_SENDER  # Use configured default sender
         to_email = instance.email
-        context = {'first_name': instance.firstName}
+        context = {
+            'first_name': instance.firstName,
+            'last_name': instance.lastName,
+            'email': instance.email,
+            'phone_number': instance.phoneNumber,
+            'country_of_residence': instance.countryOfResidence,
+            'city_of_residence': instance.cityOfResidence,
+            
+            'startup_type': instance.startupType,
+            
+            'pitch_deck_file': instance.pitchDeckFile.url if instance.pitchDeckFile else None,
+            
+            'product_name': instance.productName,
+            'site_address': instance.siteAddress,
+            
+            'customer_problem': instance.customerProblem,
+            
+            'unique_value_proposition': instance.uniqueValueProposition,
+            'technology_readiness_level': instance.technologyReadinessLevel,
+            
+            'monetization_of_your_plan': instance.monetizationOfYourPlan,
+            'structure_of_your_sales': instance.structureOfYourSales,
+            
+            'customer_characteristic': instance.customerCharacteristic,
+            'current_customers': instance.currentCustomers,
+            'estimated_market_size': instance.estimatedMarketSize,
+            
+            'startup_revenue': instance.startupRevenue,
+            'monthly_income': instance.monthlyIncome,
+            'current_interest_rate': instance.currentInterestRate,
+            'current_raised_funding': instance.currentRaisedFunding,
+            'needed_capital': instance.neededCapital,
+            
+            'business_plan_file': instance.businessPlanFile.url if instance.businessPlanFile else None,
+            
+            'financial_file': instance.financialFile.url if instance.financialFile else None,
+            
+            'cooperated_with_investors': instance.cooperatedWithInvestors,
+            'how_did_you_know_us': instance.howDidYouKnowUs,
+            
+            'created_at': instance.createdAt,
+            'updated_at': instance.updatedAt,
+        }
         text_content = f"Hi {instance.firstName},\n\nThanks for registering your startup with us."
         html_content = render_to_string('startup_registration_email.html', context)
 

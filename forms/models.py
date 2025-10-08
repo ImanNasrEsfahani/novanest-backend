@@ -5,35 +5,52 @@ from django.db import models
 class StartUpsForm(models.Model):
   firstName=models.CharField(max_length=300,blank=True)
   lastName=models.CharField(max_length=300,blank=True)
-  birthDate=models.DateField(blank=True)
   email=models.EmailField(max_length=75, blank=True)
+  phoneNumber=models.CharField(max_length=250,blank=True)
   countryOfResidence=models.CharField(max_length=300,blank=True)
-  provinceOfResidence=models.CharField(max_length=300,blank=True)
-  type=models.CharField(max_length=300,blank=True)
-  ideaExplanation=models.CharField(max_length=300,blank=True)    
-  getToKnowUs=models.CharField(max_length=300,blank=True)        
+  cityOfResidence=models.CharField(max_length=300,blank=True)
+  
+  # MVP or Early Traction or Scale-Up
+  startupType=models.CharField(max_length=300,blank=True)
+  
+  # with Pitchdeck file
   pitchDeckFile=models.FileField(upload_to='pitchdeckfile',null=True,blank=True,editable=True)      
-  businessPlanFile=models.FileField(upload_to='businessPlan',null=True,blank=True,editable=True)
+  
+  # General Information without pitchdeck file
   productName=models.CharField(max_length=500,blank=True)
   siteAddress=models.CharField(max_length=500,blank=True)
+  
+  # Problem accordion
   customerProblem=models.TextField(max_length=1500, blank=True)
-  solution=models.TextField(max_length=1500, blank=True)
-  productLevel = models.CharField(max_length=200,blank=True)
-  scalable=models.TextField(max_length=1500, blank=True)
+  
+  # Solution accordion
+  uniqueValueProposition=models.TextField(max_length=1500, blank=True)
+  technologyReadinessLevel=models.TextField(max_length=1500, blank=True)
+  
+  # business model accordion
   monetizationOfYourPlan=models.TextField(max_length=1500, blank=True)
   structureOfYourSales=models.TextField(max_length=1500, blank=True)
-  financialModelFile= models.FileField(upload_to='financialModelFile',null=True,blank=True,editable=True)
-  cooperatedWithInvestors= models.TextField(max_length=1500, blank=True)
-  financialFile = models.FileField(upload_to='financialFile',null=True,blank=True,editable=True)
+  
+  # Target Market accordion
   customerCharacteristic = models.TextField(max_length=1500, blank=True)
   currentCustomers = models.TextField(max_length=1500, blank=True)
   estimatedMarketSize= models.TextField(max_length=1500, blank=True)
-  totalTamSamSom = models.TextField(max_length=1500, blank=True)
+  
+  # Property accordion
   startupRevenue=models.TextField(max_length=1500, blank=True)
   monthlyIncome=models.TextField(max_length=1500, blank=True)
   currentInterestRate=models.TextField(max_length=1500, blank=True)
   currentRaisedFunding=models.TextField(max_length=1500, blank=True)
   neededCapital=models.TextField(max_length=1500, blank=True)
+  
+  # other files
+  businessPlanFile=models.FileField(upload_to='businessPlan',null=True,blank=True,editable=True)
+  financialFile= models.FileField(upload_to='financialFile',null=True,blank=True,editable=True)
+  
+  # last questions
+  cooperatedWithInvestors=models.TextField(max_length=1500, blank=True)
+  howDidYouKnowUs=models.TextField(max_length=1500, blank=True)
+  
   createdAt= models.DateTimeField(auto_now_add=True,blank=True)
   updatedAt= models.DateTimeField(auto_now=True,blank=True)
 
