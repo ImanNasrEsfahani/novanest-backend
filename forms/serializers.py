@@ -116,7 +116,18 @@ class InvestorRegistrationSerializer(serializers.ModelSerializer):
         subject = 'Thank You For Registering as an Investor'
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
-        context = {'first_name': instance.firstName}
+        context = {
+            'first_name': instance.firstName,
+            'last_name': instance.lastName,
+            'email': instance.email,
+            'phone_number': instance.phoneNumber,
+            'country_of_residence': instance.countryOfResidence,
+            'investment_ceiling': instance.investmentCeiling,
+            'preferred_areas': instance.preferredAreas,
+            'how_did_you_know_us': instance.howDidYouKnowUs,
+            'created_at': instance.createdAt,
+            'updated_at': instance.updatedAt,
+        }
         text_content = f"Hi {instance.firstName},\n\nThank you for registering as an investor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
         html_content = render_to_string('investor_registration_email.html', context)
 
