@@ -36,7 +36,7 @@ def _get_access_token() -> Optional[str]:
     return result['access_token']
 
 
-def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: Sequence[str], text_fallback: Optional[str] = None, attachments=None) -> bool:
+def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: Sequence[str], text_fallback: Optional[str] = None, attachments=None, cc: Optional[Sequence[str]] = None, bcc: Optional[Sequence[str]] = None) -> bool:
     """Send an email via Microsoft Graph. Returns True on success."""
     if not settings.MS_GRAPH_USE:
         logger.debug("MS Graph not configured; skipping Graph send.")
@@ -60,7 +60,11 @@ def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: 
         },
         "saveToSentItems": True,
     }
-    
+    if cc:
+        payload["message"]["ccRecipients"] = [{"emailAddress": {"address": addr}} for addr in cc]
+    if bcc:
+        payload["message"]["bccRecipients"] = [{"emailAddress": {"address": addr}} for addr in bcc]
+        
     # Add attachments if present
     logger.debug("attachments %s", attachments)
     if attachments:
@@ -81,7 +85,5 @@ def send_graph_mail(subject: str, html_template: str, context: dict, to_emails: 
         json=payload,
         timeout=30,
     )
-    if resp.status_code in (202, 200):
-        return True
-    logger.error("Graph send failed %s: %s", resp.status_code, resp.text)
-    return False
+    logger.debug("Graph response %s %s", resp.status_code, resp.text[:500])
+    return resp.status_code in (200, 202)
