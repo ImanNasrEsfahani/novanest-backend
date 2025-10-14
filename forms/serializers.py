@@ -26,6 +26,51 @@ class StartupFormSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'createdAt']
 
     def create(self, validated_data):
+        request = self.context.get('request')
+
+        # check file is available in the request
+        files = getattr(request, 'FILES', {}) or {}
+        
+        # saved pitchDeckFile in storage
+        pitchDeckFile_saved_path = None
+        pitchDeckFile_saved_filename = None
+        pitchDeckFile_uploaded_content = None
+        if 'pitchDeckFile' in files and files['pitchDeckFile']:
+            pitchDeckFile_saved_path, pitchDeckFile_saved_filename, pitchDeckFile_uploaded_content = save_request_file(
+                request=request,
+                field_name='pitchDeckFile',
+                storage_dir='startups_forms',
+                random_length=15
+            )
+        pitchDeckFile_present = bool(pitchDeckFile_uploaded_content)
+        
+        # saved businessPlanFile in storage
+        businessPlanFile_saved_path = None
+        businessPlanFile_saved_filename = None
+        businessPlanFile_uploaded_content = None
+        if 'businessPlanFile' in files and files['businessPlanFile']:
+            businessPlanFile_saved_path, businessPlanFile_saved_filename, businessPlanFile_uploaded_content = save_request_file(
+                request=request,
+                field_name='businessPlanFile',
+                storage_dir='startups_forms',
+                random_length=15
+            )
+        businessPlanFile_present = bool(businessPlanFile_uploaded_content)
+        
+        # saved financialFile in storage
+        financialFile_saved_path = None
+        financialFile_saved_filename = None
+        financialFile_uploaded_content = None
+        if 'financialFile' in files and files['financialFile']:
+            financialFile_saved_path, financialFile_saved_filename, financialFile_uploaded_content = save_request_file(
+                request=request,
+                field_name='financialFile',
+                storage_dir='startups_forms',
+                random_length=15
+            )
+        financialFile_present = bool(financialFile_uploaded_content)
+
+        # create a new record in database
         instance = super().create(validated_data)
 
         subject = 'Your Startup Information Has Been Received by NovaNest'
@@ -77,14 +122,58 @@ class StartupFormSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName},\n\nThanks for registering your startup with us."
         html_content = render_to_string('startup_registration_email.html', context)
 
-        # Try Graph first
-        if not send_graph_mail(subject, 'startup_registration_email.html', context, [to_email], text_content):
+        
+        # Prepare attachments for Graph
+        attachments = []
+        if pitchDeckFile_present:
+            ctype = mimetypes.guess_type(pitchDeckFile_saved_filename)[0] or 'application/octet-stream'
+            logger.debug("Attached Pitch Deck for %s: filename=%s type=%s", to_email, pitchDeckFile_saved_filename, ctype)
+            attachments.append((pitchDeckFile_saved_filename, pitchDeckFile_uploaded_content, ctype))
+
+        if businessPlanFile_present:
+            ctype = mimetypes.guess_type(businessPlanFile_saved_filename)[0] or 'application/octet-stream'
+            logger.debug("Attached Business Plan for %s: filename=%s type=%s", to_email, businessPlanFile_saved_filename, ctype)
+            attachments.append((businessPlanFile_saved_filename, businessPlanFile_uploaded_content, ctype))
+
+        if financialFile_present:
+            ctype = mimetypes.guess_type(financialFile_saved_filename)[0] or 'application/octet-stream'
+            logger.debug("Attached Financial File for %s: filename=%s type=%s", to_email, financialFile_saved_filename, ctype)
+            attachments.append((financialFile_saved_filename, financialFile_uploaded_content, ctype))
+            
+        # Try Graph with attachments
+        use_smtp_fallback = not send_graph_mail(
+            subject, 
+            'team_registration_email.html', 
+            context, 
+            [to_email], 
+            text_content,
+            attachments=attachments or None
+        )
+        
+        if use_smtp_fallback:
+            from django.template.loader import render_to_string
+            
+            html_content = render_to_string('team_registration_email.html', context)
             email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
-            try:
-                email.send()
-            except Exception as e:
-                logger.error(f"Failed to send startup registration email (SMTP fallback): {e}")
+
+            # attach Pitch Deck file if present
+            if pitchDeckFile_present:
+                ctype = mimetypes.guess_type(pitchDeckFile_saved_filename)[0] or 'application/octet-stream'
+                email.attach(pitchDeckFile_saved_filename, pitchDeckFile_uploaded_content, ctype)
+                logger.debug("Attached Pitch Deck for %s: filename=%s type=%s", to_email, pitchDeckFile_saved_filename, ctype)
+
+            if businessPlanFile_present:
+                ctype = mimetypes.guess_type(businessPlanFile_saved_filename)[0] or 'application/octet-stream'
+                email.attach(businessPlanFile_saved_filename, businessPlanFile_uploaded_content, ctype)
+                logger.debug("Attached Business Plan for %s: filename=%s type=%s", to_email, businessPlanFile_saved_filename, ctype)
+                
+            if financialFile_present:
+                ctype = mimetypes.guess_type(financialFile_saved_filename)[0] or 'application/octet-stream'
+                email.attach(financialFile_saved_filename, financialFile_uploaded_content, ctype)
+                logger.debug("Attached Financial File for %s: filename=%s type=%s", to_email, financialFile_saved_filename, ctype)
+                
+            email.send()
 
         return instance
     
