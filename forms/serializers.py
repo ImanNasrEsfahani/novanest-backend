@@ -143,7 +143,7 @@ class StartupFormSerializer(serializers.ModelSerializer):
         # Try Graph with attachments
         use_smtp_fallback = not send_graph_mail(
             subject, 
-            'team_registration_email.html', 
+            'startup_registration_email.html', 
             context, 
             [to_email], 
             text_content,
@@ -151,10 +151,15 @@ class StartupFormSerializer(serializers.ModelSerializer):
         )
         
         if use_smtp_fallback:
-            from django.template.loader import render_to_string
-            
-            html_content = render_to_string('team_registration_email.html', context)
-            email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
+            # reuse html_content rendered above
+            email = EmailMultiAlternatives(
+                subject=subject,
+                body=text_content,
+                from_email=from_email,
+                to=[to_email],
+                cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []),
+                bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []),
+            )
             email.attach_alternative(html_content, "text/html")
 
             # attach Pitch Deck file if present
