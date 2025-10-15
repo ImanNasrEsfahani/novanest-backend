@@ -193,8 +193,16 @@ class ContactUsSerializer(serializers.ModelSerializer):
         subject = 'Thanks for contacting us!'
         from_email = settings.MS_GRAPH_SENDER
         to_email = instance.email
-        context = {'name': instance.name}
-        text_content = f"Hi {instance.name},\n\nThanks for reaching out. We'll respond to your message shortly."
+        context = {
+            'first_name': instance.firstName,
+            'last_name': instance.lastName,
+            'email': instance.email,
+            'phone_number': instance.phoneNumber,
+            'subject': instance.subject,
+            'message': instance.message,
+            'created_at': instance.createdAt,
+        }
+        text_content = f"Hi {instance.firstName or ''},\n\nThanks for reaching out. We'll respond to your message shortly."
         html_content = render_to_string('contact_us_email.html', context)
 
         if not send_graph_mail(subject, 'contact_us_email.html', context, [to_email], text_content):

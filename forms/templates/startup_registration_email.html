@@ -20,29 +20,75 @@
     <br />
 
     <table cellpadding="6" cellspacing="0" border="0">
-        <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
-        <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
-        <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
-        <tr><td><strong>Country</strong></td><td>{{ country_of_residence|default:"—" }}</td></tr>
-        <tr><td><strong>City</strong></td><td>{{ city_of_residence|default:"—" }}</td></tr>
-        <tr><td><strong>Startup Type</strong></td><td>{{ startup_type|default:"—" }}</td></tr>
-        <tr><td><strong>Product / Service name</strong></td><td>{{ product_name|default:"—" }}</td></tr>
-        <tr><td><strong>Site address</strong></td><td>{{ site_address|default:"—" }}</td></tr>
-        <tr><td><strong>Customer problem</strong></td><td>{{ customer_problem|default:"—" }}</td></tr>
-        <tr><td><strong>Unique value proposition</strong></td><td>{{ unique_value_proposition|default:"—" }}</td></tr>
-        <tr><td><strong>Technology readiness level</strong></td><td>{{ technology_readiness_level|default:"—" }}</td></tr>
-        <tr><td><strong>Monetization of your plan</strong></td><td>{{ monetization_of_your_plan|default:"—" }}</td></tr>
-        <tr><td><strong>Structure of your sales</strong></td><td>{{ structure_of_your_sales|default:"—" }}</td></tr>
-        <tr><td><strong>Customer characteristic</strong></td><td>{{ customer_characteristic|default:"—" }}</td></tr>
-        <tr><td><strong>Current customers</strong></td><td>{{ current_customers|default:"—" }}</td></tr>
-        <tr><td><strong>Estimated market size</strong></td><td>{{ estimated_market_size|default:"—" }}</td></tr>
-        <tr><td><strong>Startup revenue</strong></td><td>{{ startup_revenue|default:"—" }}</td></tr>
-        <tr><td><strong>Monthly income</strong></td><td>{{ monthly_income|default:"—" }}</td></tr>
-        <tr><td><strong>Current interest rate</strong></td><td>{{ current_interest_rate|default:"—" }}</td></tr>
-        <tr><td><strong>Current raised funding</strong></td><td>{{ current_raised_funding|default:"—" }}</td></tr>
-        <tr><td><strong>Needed capital</strong></td><td>{{ needed_capital|default:"—" }}</td></tr>
-        <tr><td><strong>Cooperated with investors</strong></td><td>{{ cooperated_with_investors|default:"—" }}</td></tr>
-        <tr><td><strong>How did you hear about us?</strong></td><td>{{ how_did_you_know_us|default:"—" }}</td></tr>
+        <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name }}</td></tr>
+        <tr><td><strong>Email</strong></td><td>{{ email }}</td></tr>
+        <tr><td><strong>Phone Number</strong></td><td>{{ phone_number }}</td></tr>
+        <tr><td><strong>Country</strong></td><td>{{ country_of_residence }}</td></tr>
+        <tr><td><strong>City</strong></td><td>{{ city_of_residence }}</td></tr>
+        <tr><td><strong>Startup Type</strong></td><td>{{ startup_type }}</td></tr>
+
+        {% if product_name %}
+        <tr><td><strong>Product / Service name</strong></td><td>{{ product_name }}</td></tr>
+        {% endif %}
+
+        {% if site_address %}
+        <tr><td><strong>Site address</strong></td><td>{{ site_address }}</td></tr>
+        {% endif %}
+
+        {% if customer_problem %}
+        <tr><td><strong>Customer problem</strong></td><td>{{ customer_problem }}</td></tr>
+        {% endif %}
+
+        {% if unique_value_proposition %}
+        <tr><td><strong>Unique value proposition</strong></td><td>{{ unique_value_proposition }}</td></tr>
+        {% endif %}
+
+        {% if technology_readiness_level %}
+        <tr><td><strong>Technology readiness level</strong></td><td>{{ technology_readiness_level }}</td></tr>
+        {% endif %}
+
+        {% if monetization_of_your_plan %}
+        <tr><td><strong>Monetization of your plan</strong></td><td>{{ monetization_of_your_plan }}</td></tr>
+        {% endif %}
+
+        {% if structure_of_your_sales %}
+        <tr><td><strong>Structure of your sales</strong></td><td>{{ structure_of_your_sales }}</td></tr>
+        {% endif %}
+
+        {% if customer_characteristic %}
+        <tr><td><strong>Customer characteristic</strong></td><td>{{ customer_characteristic }}</td></tr>
+        {% endif %}
+
+        {% if current_customers %}
+        <tr><td><strong>Current customers</strong></td><td>{{ current_customers }}</td></tr>
+        {% endif %}
+
+        {% if estimated_market_size %}
+        <tr><td><strong>Estimated market size</strong></td><td>{{ estimated_market_size }}</td></tr>
+        {% endif %}
+
+        {% if startup_revenue %}
+        <tr><td><strong>Startup revenue</strong></td><td>{{ startup_revenue }}</td></tr>
+        {% endif %}
+
+        {% if monthly_income %}
+        <tr><td><strong>Monthly income</strong></td><td>{{ monthly_income }}</td></tr>
+        {% endif %}
+
+        {% if current_interest_rate %}
+        <tr><td><strong>Current interest rate</strong></td><td>{{ current_interest_rate }}</td></tr>
+        {% endif %}
+
+        {% if current_raised_funding %}
+        <tr><td><strong>Current raised funding</strong></td><td>{{ current_raised_funding }}</td></tr>
+        {% endif %}
+
+        {% if needed_capital %}
+        <tr><td><strong>Needed capital</strong></td><td>{{ needed_capital }}</td></tr>
+        {% endif %}
+
+        <tr><td><strong>Cooperated with investors</strong></td><td>{{ cooperated_with_investors }}</td></tr>
+        <tr><td><strong>How did you hear about us?</strong></td><td>{{ how_did_you_know_us }}</td></tr>
         <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
     </table>
 

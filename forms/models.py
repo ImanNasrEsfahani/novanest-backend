@@ -56,7 +56,8 @@ class StartUpsForm(models.Model):
 
 
 class ContactUs(models.Model):
-  name=models.CharField(max_length=250,blank=True)
+  firstName=models.CharField(max_length=250,blank=True)
+  lastName=models.CharField(max_length=250,blank=True)
   email=models.EmailField(max_length=75, blank=True)
   phoneNumber=models.CharField(max_length=250,blank=True)
   subject=models.CharField(max_length=500,blank=True)
