@@ -1,4 +1,4 @@
-from .models import StartUpsForm,ContactUs,AffiliateRegistration,InvestorRegistration,MentorRegistration,TeamRegistration
+from .models import StartUpsForm,ContactUs,AffiliateRegistration,InvestorRegistration,MentorRegistration,TeamRegistration,TraineeRegistration
 from rest_framework import serializers
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -432,6 +432,126 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             from django.template.loader import render_to_string
             
             html_content = render_to_string('team_registration_email.html', context)
+            email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
+            email.attach_alternative(html_content, "text/html")
+
+            # attach CV file if present
+            if cv_present:
+                ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
+                email.attach(saved_filename, uploaded_content, ctype)
+                logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
+                
+            email.send()
+ 
+        return instance
+    
+    
+class TraineeRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TraineeRegistration
+        fields = '__all__'
+        read_only_fields = ['id','createdAt']
+
+    def validate(self, data):
+        """
+        Conditional validation depending on presence of cvFile in request.FILES or initial_data.
+        - If cvFile is present: require cvFile, firstName, lastName, email, phoneNumber,
+          TypeOfCollaboration, FieldOfExpert
+        - If cvFile not present: require firstName, lastName, email, phoneNumber,
+          birthDate, FieldOfInterest,  FieldOfInterestOther, TellUsAboutYourself
+        """
+        request = self.context.get('request')
+        initial = getattr(self, 'initial_data', {}) or {}
+        files = getattr(request, 'FILES', {}) if request is not None else {}
+        has_cv = bool(files.get('cvFile') or initial.get('cvFile'))
+
+        required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'FieldOfInterest', 'FieldOfInterestOther']
+        required_extra = ['birthDate', 'workHistorySummary']
+
+        missing = {}
+        # check file separately
+        if has_cv:
+            if not (files.get('cvFile') or initial.get('cvFile')):
+                missing['cvFile'] = 'cvFile is required when uploading a CV.'
+
+        # choose required set
+        required = required_base + ( [] if has_cv else required_extra )
+
+        for key in required:
+            # look in validated data first then raw initial_data
+            val = data.get(key) if isinstance(data, dict) else None
+            if val in [None, '']:
+                val = initial.get(key, None)
+            if val in [None, '']:
+                missing[key] = 'This field is required.'
+
+        if missing:
+            raise serializers.ValidationError(missing)
+
+        return data
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        
+        # check file is available in the request
+        files = getattr(request, 'FILES', {}) or {}
+        saved_path = None
+        saved_filename = None
+        uploaded_content = None
+        if 'cvFile' in files and files['cvFile']:
+            saved_path, saved_filename, uploaded_content = save_request_file(
+                request=request,
+                field_name='cvFile',
+                storage_dir='team_cv',
+                random_length=15
+            )
+            
+        instance = super().create(validated_data)
+
+        cv_present = bool(uploaded_content)
+
+        context = {
+            'first_name': instance.firstName,
+            'last_name': instance.lastName,
+            'email': instance.email,
+            'phone_number': instance.phoneNumber,
+            'country_of_residence': instance.countryOfResidence,
+            'city_of_residence': instance.cityOfResidence,
+            'Field_of_interest': instance.FieldOfInterest,
+            'Field_of_interest_other': instance.FieldOfInterestOther,
+            'birth_date': instance.birthDate,
+            'Tell_us_about_yourself': instance.TellUsAboutYourself,
+            'created_at': instance.createdAt,
+            
+            'cv_present': cv_present,
+        }
+
+        subject = 'Thank You for Registering to Join Our Team'
+        from_email = settings.MS_GRAPH_SENDER
+        to_email = instance.email
+        text_content = f"Hi {instance.firstName},\n\nThank you for registering to join our team. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Team Platform Team"
+
+        # Prepare attachments for Graph
+        attachments = []
+        if cv_present:
+            ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
+            logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
+            attachments.append((saved_filename, uploaded_content, ctype))
+        
+        # Try Graph with attachments
+        use_smtp_fallback = not send_graph_mail(
+            subject, 
+            'team_registration_email.html', 
+            context, 
+            [to_email], 
+            text_content,
+            attachments=attachments or None
+        )
+    
+        if use_smtp_fallback:
+            from django.template.loader import render_to_string
+            
+            html_content = render_to_string('trainee_registration_email.html', context)
             email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
 

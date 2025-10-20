@@ -124,3 +124,17 @@ class TeamRegistration(models.Model):
   workHistorySummary=models.CharField(max_length=1500, null=True, blank=True)
   createdAt=models.DateTimeField(auto_now_add=True)
   updatedAt=models.DateTimeField(auto_now=True)
+
+class TraineeRegistration(models.Model):
+  firstName=models.CharField(max_length=500, blank=True)
+  lastName=models.CharField(max_length=500, blank=True)
+  email=models.EmailField(max_length=75, blank=True)
+  phoneNumber=models.CharField(max_length=25, blank=True)
+  countryOfResidence=models.CharField(max_length=300, blank=True)
+  cityOfResidence=models.CharField(max_length=300, blank=True)
+  birthDate=models.DateField(null=True, blank=True)
+  FieldOfInterest=models.CharField(max_length=300, null=True, blank=True)
+  FieldOfInterest=models.CharField(max_length=300, null=True, blank=True)
+  TellUsAboutYourself=models.CharField(max_length=1500, null=True, blank=True)
+  createdAt=models.DateTimeField(auto_now_add=True)
+  updatedAt=models.DateTimeField(auto_now=True)

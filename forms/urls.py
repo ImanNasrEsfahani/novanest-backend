@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import StartUpsFormView,ContactUsView,AffiliateRegistrationView,InvestorRegistrationView,JoinAsMentorView,JoinOurTeamView,CSRFTokenView
+from .views import StartUpsFormView,ContactUsView,AffiliateRegistrationView,InvestorRegistrationView,JoinAsMentorView,JoinOurTeamView,JoinOurTraineeView,CSRFTokenView
 
 
 app_name = "forms"
@@ -10,5 +10,6 @@ urlpatterns = [
     path('investor-registration',InvestorRegistrationView.as_view(),name='investor-registration'),
     path('join-as-mentor',JoinAsMentorView.as_view(),name='join-as-mentor'),
     path('join-our-team',JoinOurTeamView.as_view(),name='join-our-team'),
+    path('join-as-a-trainee',JoinOurTraineeView.as_view(),name='join-as-a-trainee'),
     path('get-csrf-token', CSRFTokenView.as_view(), name='get_csrf_token'),
 ]
