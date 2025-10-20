@@ -117,6 +117,7 @@ class TeamRegistration(models.Model):
   cityOfResidence=models.CharField(max_length=300, blank=True)
   TypeOfCollaboration=models.CharField(max_length=100, blank=True)
   FieldOfExpert=models.CharField(max_length=100, blank=True)
+  FieldOfExpertOther=models.CharField(max_length=100, blank=True)
   birthDate=models.DateField(null=True, blank=True)
   educationLevel=models.CharField(max_length=100, null=True, blank=True)
   educationField=models.CharField(max_length=300, null=True, blank=True)

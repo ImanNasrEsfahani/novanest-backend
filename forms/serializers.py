@@ -396,6 +396,7 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             'city_of_residence': instance.cityOfResidence,
             'type_of_collaboration': instance.TypeOfCollaboration,
             'field_of_expert': instance.FieldOfExpert,
+            'field_of_expert_other': instance.FieldOfExpertOther,
             'birth_date': instance.birthDate,
             'education_level': instance.educationLevel,
             'education_field': instance.educationField,

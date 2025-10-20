@@ -28,6 +28,9 @@
         <tr><td><strong>City of Residence</strong></td><td>{{ city_of_residence|default:"—" }}</td></tr>
         <tr><td><strong>Type of Collaboration</strong></td><td>{{ type_of_collaboration|default:"—" }}</td></tr>
         <tr><td><strong>Field of Expert</strong></td><td>{{ field_of_expert|default:"—" }}</td></tr>
+        {% if field_of_expert_other %}
+            <tr><td><strong>Field of Expert (Other)</strong></td><td>{{ field_of_expert_other }}</td></tr>
+        {% endif %}
         <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
     </table>
     {% else %}
