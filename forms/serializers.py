@@ -466,8 +466,9 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
         has_cv = bool(files.get('cvFile') or initial.get('cvFile'))
 
         required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'fieldOfExpert']
-        required_extra = ['fieldOfExpertOther', 'birthDate', 'tellUsAboutYourself']
-
+        required_extra = ['birthDate', 'tellUsAboutYourself']
+        not_required = ['fieldOfExpertOther']
+        
         missing = {}
         # check file separately
         if has_cv:
