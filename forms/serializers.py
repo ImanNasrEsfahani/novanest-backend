@@ -458,15 +458,15 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
         - If cvFile is present: require cvFile, firstName, lastName, email, phoneNumber,
           TypeOfCollaboration, FieldOfExpert
         - If cvFile not present: require firstName, lastName, email, phoneNumber,
-          birthDate, FieldOfInterest,  FieldOfInterestOther, TellUsAboutYourself
+          birthDate, FieldOfExpert,  FieldOfExpertOther, TellUsAboutYourself
         """
         request = self.context.get('request')
         initial = getattr(self, 'initial_data', {}) or {}
         files = getattr(request, 'FILES', {}) if request is not None else {}
         has_cv = bool(files.get('cvFile') or initial.get('cvFile'))
 
-        required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'FieldOfInterest', 'FieldOfInterestOther']
-        required_extra = ['birthDate', 'workHistorySummary']
+        required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'fieldOfExpert']
+        required_extra = ['fieldOfExpertOther', 'birthDate', 'tellUsAboutYourself']
 
         missing = {}
         # check file separately
@@ -517,10 +517,10 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
             'phone_number': instance.phoneNumber,
             'country_of_residence': instance.countryOfResidence,
             'city_of_residence': instance.cityOfResidence,
-            'Field_of_expert': instance.FieldOfExpert,
-            'Field_of_expert_other': instance.FieldOfExpertOther,
+            'field_of_expert': instance.fieldOfExpert,
+            'field_of_expert_other': instance.fieldOfExpertOther,
             'birth_date': instance.birthDate,
-            'Tell_us_about_yourself': instance.TellUsAboutYourself,
+            'tell_us_about_yourself': instance.tellUsAboutYourself,
             'created_at': instance.createdAt,
             
             'cv_present': cv_present,
