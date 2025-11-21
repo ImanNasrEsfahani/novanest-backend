@@ -542,7 +542,7 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
         # Try Graph with attachments
         use_smtp_fallback = not send_graph_mail(
             subject, 
-            'team_registration_email.html', 
+            'trainee_registration_email.html', 
             context, 
             [to_email], 
             text_content,
