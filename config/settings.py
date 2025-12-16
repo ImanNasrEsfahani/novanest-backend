@@ -207,7 +207,7 @@ REST_FRAMEWORK = {
 MS_GRAPH_TENANT_ID = os.environ.get('MS_GRAPH_TENANT_ID')
 MS_GRAPH_CLIENT_ID = os.environ.get('MS_GRAPH_CLIENT_ID')
 MS_GRAPH_CLIENT_SECRET = os.environ.get('MS_GRAPH_CLIENT_SECRET')
-MS_GRAPH_SENDER = os.environ.get('MS_GRAPH_SENDER', "info@landatrip.com")
+MS_GRAPH_SENDER = os.environ.get('MS_GRAPH_SENDER', "info@NovaNestVenture.com")
 MS_GRAPH_USE = all([
     MS_GRAPH_TENANT_ID,
     MS_GRAPH_CLIENT_ID,
