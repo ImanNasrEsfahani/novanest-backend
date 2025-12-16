@@ -1,36 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Investor Registration Confirmation</title>
-</head>
-<body>
-    <p>Dear {{ first_name }},</p>
-    <p>Thank you for submitting your interest in collaborating with NovaNest as an investor</p>
-    <p>We truly appreciate your interest in supporting startups and fostering innovation.</p>
-    <p>At NovaNest, we aim to connect with individuals who share our vision for growth and want to be part of this journey.</p>
-    <p>Our team will review your information shortly, and if needed, we’ll reach out to discuss potential next steps.</p>
-    <p>Thank you again for your interest in joining NovaNest’s mission to support innovation and startup growth.</p>
-    
-    <p>Best regards,
-        <br>NovaNest Venture Team</p>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
+{% extends "base_email.html" %}
 
-    <table cellpadding="6" cellspacing="0" border="0">
-        <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
-        <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
-        <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
-        <tr><td><strong>Country of Residence</strong></td><td>{{ country_of_residence|default:"—" }}</td></tr>
-        <tr><td><strong>Investment Ceiling</strong></td><td>{{ investment_ceiling|default:"—" }}</td></tr>
-        <tr><td><strong>Preferred Areas</strong></td><td>{{ preferred_areas|default:"—" }}</td></tr>
-        <tr><td><strong>How did you hear about us?</strong></td><td>{{ how_did_you_know_us|default:"—" }}</td></tr>
-        <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
-    </table>
+{% block title %}Investor Registration Confirmation{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<p>Dear {{ first_name }},</p>
+<p>Thank you for submitting your interest in collaborating with NovaNest as an investor.</p>
+<p>We truly appreciate your interest in supporting startups and fostering innovation.</p>
+<p>At NovaNest, we aim to connect with individuals who share our vision for growth and want to be part of this journey.</p>
+<p>Our team will review your information shortly, and if needed, we'll reach out to discuss potential next steps.</p>
+<p>Thank you again for your interest in joining NovaNest's mission to support innovation and startup growth.</p>
+
+<table cellpadding="8" cellspacing="0" border="0" style="margin:20px 0;width:100%;border-collapse:collapse">
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Full name</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ first_name }} {{ last_name|default:"" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Email</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ email|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Phone Number</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ phone_number|default:"—" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Country of Residence</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ country_of_residence|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Investment Ceiling</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ investment_ceiling|default:"—" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Preferred Areas</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ preferred_areas|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>How did you hear about us?</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ how_did_you_know_us|default:"—" }}</td></tr>
+    <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
+</table>
+{% endblock %}

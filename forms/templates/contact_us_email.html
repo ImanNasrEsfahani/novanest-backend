@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Contact Registration Confirmation</title>
-</head>
-<body>
-    <p>Hi {{ name }},</p>
-    <p>Thank you for registering as an Contact. We appreciate your interest and will get back to you shortly.</p>
+{% extends "base_email.html" %}
 
-    <table cellpadding="6" cellspacing="0" border="0">
-        <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
-        <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
-        <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
-        <tr><td><strong>Subject</strong></td><td>{{ subject|default:"—" }}</td></tr>
-        <tr><td><strong>Message</strong></td><td>{{ message|default:"—" }}</td></tr>
+{% block title %}Contact Registration Confirmation{% endblock %}
+
+{% block content %}
+<p>Thank you for reaching out to us. We appreciate your interest and will get back to you shortly.</p>
+<p>If you have any urgent questions, feel free to contact us at <a href="mailto:info@NovaNestVenture.com" style="color:#0066cc">info@NovaNestVenture.com</a>.</p>
+
+    <table cellpadding="8" cellspacing="0" border="0" style="margin:20px 0;width:100%;border-collapse:collapse">
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Full name</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ first_name }} {{ last_name|default:"" }}</td></tr>
+        <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Email</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ email|default:"—" }}</td></tr>
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Phone Number</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ phone_number|default:"—" }}</td></tr>
+        <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Subject</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ subject|default:"—" }}</td></tr>
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Message</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ message|default:"—" }}</td></tr>
         <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
     </table>
-
-    <p>Best regards,<br>The Communication Platform Team</p>
-</body>
-</html>
+{% endblock %}

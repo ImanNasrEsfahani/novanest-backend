@@ -1,39 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Mentor Registration Confirmation</title>
-</head>
-<body>
+{% extends "base_email.html" %}
+
+{% block title %}Mentor Registration Confirmation{% endblock %}
+
+{% block content %}
     <p>Dear {{ first_name }},</p>
     <p>Thank you for taking the time to complete the NovaNest Mentor Application Form.</p>
     <p>We truly appreciate your interest in collaborating with us and supporting the growth of young entrepreneurs and startups.</p>
     <p>Experienced and inspiring individuals like you make a real difference, and we believe that the future of innovation is built through mentorship and shared experience.</p>
-    <p>Our team will review your information soon and will contact you if we’d like to schedule an introductory conversation.</p>
+    <p>Our team will review your information soon and will contact you if we'd like to schedule an introductory conversation.</p>
     <p>Thanks again for your enthusiasm and willingness to be part of this journey.</p>
-    <p></p>
 
-    <p>Best regards,
-    <br>NovaNest Venture Team</p>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <table cellpadding="6" cellspacing="0" border="0">
-        <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
-        <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
-        <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
-        <tr><td><strong>Country</strong></td><td>{{ country_of_residence|default:"—" }}</td></tr>
-        <tr><td><strong>City</strong></td><td>{{ city_of_residence|default:"—" }}</td></tr>
-        <tr><td><strong>Birth Date</strong></td><td>{{ birth_date|default:"—" }}</td></tr>
-        <tr><td><strong>Website address</strong></td><td>{{ website|default:"—" }}</td></tr>
-        <tr><td><strong>Linkedin address</strong></td><td>{{ linkedin|default:"—" }}</td></tr>
-        <tr><td><strong>Instagram</strong></td><td>{{ instagram|default:"—" }}</td></tr>
-        <tr><td><strong>Expertise Areas</strong></td><td>{{ experties_areas|default:"—" }}</td></tr>
-        <tr><td><strong>How did you hear about us?</strong></td><td>{{ how_did_you_know_us|default:"—" }}</td></tr>
+    <table cellpadding="8" cellspacing="0" border="0" style="margin:20px 0;width:100%;border-collapse:collapse">
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Full name</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ first_name }} {{ last_name|default:"" }}</td></tr>
+        <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Email</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ email|default:"—" }}</td></tr>
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Phone Number</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ phone_number|default:"—" }}</td></tr>
+        <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Country</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ country_of_residence|default:"—" }}</td></tr>
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>City</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ city_of_residence|default:"—" }}</td></tr>
+        <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Birth Date</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ birth_date|default:"—" }}</td></tr>
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Website address</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ website|default:"—" }}</td></tr>
+        <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Linkedin address</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ linkedin|default:"—" }}</td></tr>
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Instagram</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ instagram|default:"—" }}</td></tr>
+        <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Expertise Areas</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ experties_areas|default:"—" }}</td></tr>
+        <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>How did you hear about us?</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ how_did_you_know_us|default:"—" }}</td></tr>
         <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
     </table>
-</body>
-</html>
+{% endblock %}
