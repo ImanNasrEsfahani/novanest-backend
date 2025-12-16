@@ -545,7 +545,14 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
             
         instance = super().create(validated_data)
 
-        cv_present = bool(uploaded_content)
+        # determine cv presence more reliably (consider request.FILES, saved filename, and uploaded content)
+        cv_present = bool(files.get('cvFile')) or bool(saved_filename) or (uploaded_content not in [None, b'', ''])
+        logger.debug("Team.create cv detection: cv_present=%s files_has=%s saved_filename=%s uploaded_content_type=%s uploaded_content_len=%s",
+                     cv_present,
+                     bool(files.get('cvFile')),
+                     saved_filename,
+                     type(uploaded_content).__name__ if uploaded_content is not None else None,
+                     (len(uploaded_content) if hasattr(uploaded_content, '__len__') else 'unknown') if uploaded_content not in [None, ''] else 0)
 
         context = {
             'first_name': instance.firstName,
