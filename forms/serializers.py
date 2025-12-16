@@ -334,6 +334,8 @@ class MentorRegistrationSerializer(serializers.ModelSerializer):
         return instance
     
 class TeamRegistrationSerializer(serializers.ModelSerializer):
+    cvFile = serializers.FileField(required=False, allow_null=True)
+    
     class Meta:
         model = TeamRegistration
         fields = '__all__'
@@ -350,7 +352,9 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         initial = getattr(self, 'initial_data', {}) or {}
         files = getattr(request, 'FILES', {}) if request is not None else {}
-        has_cv = bool(files.get('cvFile') or initial.get('cvFile'))
+        
+        # Check for cvFile in files, validated data, or initial data
+        has_cv = bool(files.get('cvFile') or data.get('cvFile') or initial.get('cvFile'))
 
         required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'typeOfCollaboration', 'fieldOfExpert']
         required_extra = ['birthDate', 'educationField', 'educationLevel', 'workHistorySummary']
@@ -381,13 +385,24 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         saved_path = None
         saved_filename = None
         uploaded_content = None
+        
         if 'cvFile' in files and files['cvFile']:
-            saved_path, saved_filename, uploaded_content = save_request_file(
+            cv_file = files['cvFile']
+            # Read file content BEFORE saving (reset pointer first)
+            cv_file.seek(0)
+            uploaded_content = cv_file.read()
+            # Reset pointer for save_request_file to work
+            cv_file.seek(0)
+            
+            saved_path, saved_filename, _ = save_request_file(
                 request=request,
                 field_name='cvFile',
                 storage_dir='team_cv',
                 random_length=15
             )
+            
+        # Remove cvFile from validated_data if present (it's handled separately)
+        validated_data.pop('cvFile', None)
             
         instance = super().create(validated_data)
 
@@ -419,9 +434,9 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
 
         # Prepare attachments for Graph
         attachments = []
-        if cv_present:
+        if cv_present and saved_filename:
             ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
-            logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
+            logger.debug("Attached CV for %s: filename=%s type=%s size=%d", to_email, saved_filename, ctype, len(uploaded_content))
             attachments.append((saved_filename, uploaded_content, ctype))
         
         # Try Graph with attachments
@@ -433,28 +448,25 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             context, 
             [to_email], 
             text_content,
-            attachments=attachments or None,
+            attachments=attachments if attachments else None,
             cc=cc_emails,
             bcc=bcc_emails
         )
     
         if use_smtp_fallback:
-            from django.template.loader import render_to_string
-            
             html_content = render_to_string('team_registration_email.html', context)
             email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
 
             # attach CV file if present
-            if cv_present:
+            if cv_present and saved_filename:
                 ctype = mimetypes.guess_type(saved_filename)[0] or 'application/octet-stream'
                 email.attach(saved_filename, uploaded_content, ctype)
-                logger.debug("Attached CV for %s: filename=%s type=%s", to_email, saved_filename, ctype)
+                logger.debug("SMTP Attached CV for %s: filename=%s type=%s size=%d", to_email, saved_filename, ctype, len(uploaded_content))
                 
             email.send()
  
         return instance
-    
     
 class TraineeRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
