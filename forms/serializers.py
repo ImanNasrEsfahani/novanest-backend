@@ -356,13 +356,9 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
         required_extra = ['birthDate', 'educationField', 'educationLevel', 'workHistorySummary']
 
         missing = {}
-        # check file separately
-        if has_cv:
-            if not (files.get('cvFile') or initial.get('cvFile')):
-                missing['cvFile'] = 'cvFile is required when uploading a CV.'
 
-        # choose required set
-        required = required_base + ( [] if has_cv else required_extra )
+        # choose required set - extra fields required only when NO CV file
+        required = required_base + (required_extra if not has_cv else [])
 
         for key in required:
             # look in validated data first then raw initial_data
