@@ -476,7 +476,7 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
                 missing['cvFile'] = 'cvFile is required when uploading a CV.'
 
         # choose required set
-        required = required_base + ( [] if has_cv else required_extra )
+        required = required_base + ( [] if not has_cv else required_extra )
 
         for key in required:
             # look in validated data first then raw initial_data
