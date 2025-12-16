@@ -141,13 +141,17 @@ class StartupFormSerializer(serializers.ModelSerializer):
             attachments.append((financialFile_saved_filename, financialFile_uploaded_content, ctype))
             
         # Try Graph with attachments
+        cc_emails = getattr(settings, "ALTERNATIVE_CC_EMAILS", [])
+        bcc_emails = getattr(settings, "ALTERNATIVE_BCC_EMAILS", [])
         use_smtp_fallback = not send_graph_mail(
             subject, 
             'startup_registration_email.html', 
             context, 
             [to_email], 
             text_content,
-            attachments=attachments or None
+            attachments=attachments or None,
+            cc=cc_emails,
+            bcc=bcc_emails
         )
         
         if use_smtp_fallback:
@@ -205,7 +209,9 @@ class ContactUsSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName or ''},\n\nThanks for reaching out. We'll respond to your message shortly."
         html_content = render_to_string('contact_us_email.html', context)
 
-        if not send_graph_mail(subject, 'contact_us_email.html', context, [to_email], text_content):
+        cc_emails = getattr(settings, "ALTERNATIVE_CC_EMAILS", [])
+        bcc_emails = getattr(settings, "ALTERNATIVE_BCC_EMAILS", [])
+        if not send_graph_mail(subject, 'contact_us_email.html', context, [to_email], text_content, cc=cc_emails, bcc=bcc_emails):
             email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
@@ -240,7 +246,9 @@ class AffiliateRegistrationSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName},\n\nWe're excited to have you as an affiliate!"
         html_content = render_to_string('affiliate_registration_email.html', context)
 
-        if not send_graph_mail(subject, 'affiliate_registration_email.html', context, [to_email], text_content):
+        cc_emails = getattr(settings, "ALTERNATIVE_CC_EMAILS", [])
+        bcc_emails = getattr(settings, "ALTERNATIVE_BCC_EMAILS", [])
+        if not send_graph_mail(subject, 'affiliate_registration_email.html', context, [to_email], text_content, cc=cc_emails, bcc=bcc_emails):
             email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
@@ -275,8 +283,9 @@ class InvestorRegistrationSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName},\n\nThank you for registering as an investor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Investment Platform Team"
         html_content = render_to_string('investor_registration_email.html', context)
 
-        # Create and send email
-        if not send_graph_mail(subject, 'investor_registration_email.html', context, [to_email], text_content):
+        cc_emails = getattr(settings, "ALTERNATIVE_CC_EMAILS", [])
+        bcc_emails = getattr(settings, "ALTERNATIVE_BCC_EMAILS", [])
+        if not send_graph_mail(subject, 'investor_registration_email.html', context, [to_email], text_content, cc=cc_emails, bcc=bcc_emails):
             email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
@@ -315,8 +324,9 @@ class MentorRegistrationSerializer(serializers.ModelSerializer):
         text_content = f"Hi {instance.firstName},\n\nThank you for registering as a mentor. We appreciate your interest and will get back to you shortly.\n\nBest regards,\nThe Mentorship Platform Team"
         html_content = render_to_string('mentor_registration_email.html', context)
 
-        # Create and send email
-        if not send_graph_mail(subject, 'mentor_registration_email.html', context, [to_email], text_content):
+        cc_emails = getattr(settings, "ALTERNATIVE_CC_EMAILS", [])
+        bcc_emails = getattr(settings, "ALTERNATIVE_BCC_EMAILS", [])
+        if not send_graph_mail(subject, 'mentor_registration_email.html', context, [to_email], text_content, cc=cc_emails, bcc=bcc_emails):
             email = EmailMultiAlternatives(subject=subject, body=text_content, from_email=from_email, to=[to_email], cc=getattr(settings, "ALTERNATIVE_CC_EMAILS", []), bcc=getattr(settings, "ALTERNATIVE_BCC_EMAILS", []))
             email.attach_alternative(html_content, "text/html")
             email.send()
@@ -419,13 +429,17 @@ class TeamRegistrationSerializer(serializers.ModelSerializer):
             attachments.append((saved_filename, uploaded_content, ctype))
         
         # Try Graph with attachments
+        cc_emails = getattr(settings, "ALTERNATIVE_CC_EMAILS", [])
+        bcc_emails = getattr(settings, "ALTERNATIVE_BCC_EMAILS", [])
         use_smtp_fallback = not send_graph_mail(
             subject, 
             'team_registration_email.html', 
             context, 
             [to_email], 
             text_content,
-            attachments=attachments or None
+            attachments=attachments or None,
+            cc=cc_emails,
+            bcc=bcc_emails
         )
     
         if use_smtp_fallback:
@@ -540,13 +554,17 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
             attachments.append((saved_filename, uploaded_content, ctype))
         
         # Try Graph with attachments
+        cc_emails = getattr(settings, "ALTERNATIVE_CC_EMAILS", [])
+        bcc_emails = getattr(settings, "ALTERNATIVE_BCC_EMAILS", [])
         use_smtp_fallback = not send_graph_mail(
             subject, 
             'trainee_registration_email.html', 
             context, 
             [to_email], 
             text_content,
-            attachments=attachments or None
+            attachments=attachments or None,
+            cc=cc_emails,
+            bcc=bcc_emails
         )
     
         if use_smtp_fallback:
