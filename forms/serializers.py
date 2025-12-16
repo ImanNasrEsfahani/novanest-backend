@@ -25,6 +25,109 @@ class StartupFormSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id', 'createdAt']
 
+    def validate(self, data):
+        """
+        Conditional validation for StartUpsForm.
+        - Always required: firstName, lastName, email, phoneNumber, countryOfResidence, 
+          cityOfResidence, startupType
+        - If pitchDeckFile is NOT present: also require productName, customerProblem,
+          uniqueValueProposition, technologyReadinessLevel, monetizationOfYourPlan,
+          structureOfYourSales, customerCharacteristic, estimatedMarketSize,
+          neededCapital
+        - Optional fields: siteAddress, currentCustomers, startupRevenue, monthlyIncome,
+          currentInterestRate, currentRaisedFunding, businessPlanFile, financialFile,
+          cooperatedWithInvestors, howDidYouKnowUs
+        """
+        logger.debug("StartupFormSerializer.validate started")
+        request = self.context.get('request')
+        logger.debug("Request object: %s", type(request))
+        initial = getattr(self, 'initial_data', {}) or {}
+        logger.debug("Initial data keys: %s", list(initial.keys()))
+        files = getattr(request, 'FILES', {}) if request is not None else {}
+        logger.debug("FILES keys: %s", list(files.keys()))
+        
+        # Check if pitchDeckFile is present
+        has_pitch_deck = bool(files.get('pitchDeckFile') or initial.get('pitchDeckFile') or data.get('pitchDeckFile'))
+        logger.debug("has_pitch_deck determined as: %s (files=%s, initial=%s, data=%s)", 
+                     has_pitch_deck, 
+                     bool(files.get('pitchDeckFile')), 
+                     bool(initial.get('pitchDeckFile')),
+                     bool(data.get('pitchDeckFile')))
+
+        # Always required fields
+        required_base = [
+            'firstName', 
+            'lastName', 
+            'email', 
+            'phoneNumber', 
+            'countryOfResidence', 
+            'cityOfResidence',
+            'startupType',
+        ]
+        
+        # Required only if NO pitchDeckFile is provided (user must fill out details manually)
+        required_without_pitch_deck = [
+            'productName',
+            'customerProblem',
+            'uniqueValueProposition',
+            'technologyReadinessLevel',
+            'monetizationOfYourPlan',
+            'structureOfYourSales',
+            'customerCharacteristic',
+            'estimatedMarketSize',
+            'neededCapital',
+        ]
+        
+        # Optional fields (for reference, not enforced)
+        optional_fields = [
+            'siteAddress',
+            'currentCustomers',
+            'startupRevenue',
+            'monthlyIncome',
+            'currentInterestRate',
+            'currentRaisedFunding',
+            'businessPlanFile',
+            'financialFile',
+            'cooperatedWithInvestors',
+            'howDidYouKnowUs',
+        ]
+        
+        logger.debug("required_base: %s", required_base)
+        logger.debug("required_without_pitch_deck: %s", required_without_pitch_deck)
+
+        missing = {}
+        
+        # Determine which fields to require
+        required = required_base + ([] if has_pitch_deck else required_without_pitch_deck)
+        logger.debug("Final required fields to validate: %s", required)
+
+        for key in required:
+            # Look in validated data first, then raw initial_data
+            val = data.get(key) if isinstance(data, dict) else None
+            logger.debug("Checking field '%s' in validated data: %s", key, val)
+            if val in [None, '']:
+                val = initial.get(key, None)
+                logger.debug("Fallback to initial data for '%s': %s", key, val)
+            if val in [None, '']:
+                missing[key] = 'This field is required.'
+                logger.debug("Field '%s' is missing or empty; marking as missing", key)
+
+        # Validate email format if provided
+        email_val = data.get('email') or initial.get('email')
+        if email_val:
+            import re
+            email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            if not re.match(email_regex, email_val):
+                missing['email'] = 'Enter a valid email address.'
+                logger.debug("Email validation failed for: %s", email_val)
+
+        if missing:
+            logger.debug("Validation failed. Missing/invalid fields: %s", missing)
+            raise serializers.ValidationError(missing)
+
+        logger.debug("StartupFormSerializer.validate completed successfully")
+        return data
+
     def create(self, validated_data):
         request = self.context.get('request')
 
