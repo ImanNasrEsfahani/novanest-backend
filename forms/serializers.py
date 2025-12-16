@@ -496,35 +496,50 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
         - If cvFile not present: require firstName, lastName, email, phoneNumber,
           birthDate, FieldOfExpert,  FieldOfExpertOther, TellUsAboutYourself
         """
+        logger.debug("TraineeRegistrationSerializer.validate started")
         request = self.context.get('request')
+        logger.debug("Request object: %s", type(request))
         initial = getattr(self, 'initial_data', {}) or {}
+        logger.debug("Initial data keys: %s", list(initial.keys()))
         files = getattr(request, 'FILES', {}) if request is not None else {}
+        logger.debug("FILES keys: %s", list(files.keys()))
         has_cv = bool(files.get('cvFile') or initial.get('cvFile'))
+        logger.debug("has_cv determined as: %s (files.get('cvFile')=%s, initial.get('cvFile')=%s)", has_cv, bool(files.get('cvFile')), bool(initial.get('cvFile')))
 
         required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'fieldOfExpert']
         required_extra = ['birthDate', 'tellUsAboutYourself']
         not_required = ['fieldOfExpertOther']
-        
+        logger.debug("required_base: %s", required_base)
+        logger.debug("required_extra: %s", required_extra)
+
         missing = {}
         # check file separately
         if has_cv:
+            logger.debug("Checking cvFile presence in files or initial")
             if not (files.get('cvFile') or initial.get('cvFile')):
                 missing['cvFile'] = 'cvFile is required when uploading a CV.'
+                logger.debug("cvFile missing according to check")
 
         # choose required set
         required = required_base + ( [] if not has_cv else required_extra )
+        logger.debug("Final required fields to validate: %s", required)
 
         for key in required:
             # look in validated data first then raw initial_data
             val = data.get(key) if isinstance(data, dict) else None
+            logger.debug("Checking field '%s' in validated data: %s", key, val)
             if val in [None, '']:
                 val = initial.get(key, None)
+                logger.debug("Fallback to initial data for '%s': %s", key, val)
             if val in [None, '']:
                 missing[key] = 'This field is required.'
+                logger.debug("Field '%s' is missing or empty; marking as missing", key)
 
         if missing:
+            logger.debug("Validation failed. Missing fields: %s", missing)
             raise serializers.ValidationError(missing)
 
+        logger.debug("TraineeRegistrationSerializer.validate completed successfully")
         return data
 
     def create(self, validated_data):
@@ -539,7 +554,7 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
             saved_path, saved_filename, uploaded_content = save_request_file(
                 request=request,
                 field_name='cvFile',
-                storage_dir='team_cv',
+                storage_dir='trainee_cv',
                 random_length=15
             )
             
@@ -547,7 +562,7 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
 
         # determine cv presence more reliably (consider request.FILES, saved filename, and uploaded content)
         cv_present = bool(files.get('cvFile')) or bool(saved_filename) or (uploaded_content not in [None, b'', ''])
-        logger.debug("Team.create cv detection: cv_present=%s files_has=%s saved_filename=%s uploaded_content_type=%s uploaded_content_len=%s",
+        logger.debug("TraineeRegistrationSerializer.create cv detection: cv_present=%s files_has=%s saved_filename=%s uploaded_content_type=%s uploaded_content_len=%s",
                      cv_present,
                      bool(files.get('cvFile')),
                      saved_filename,
