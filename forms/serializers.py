@@ -521,7 +521,7 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
                 logger.debug("cvFile missing according to check")
 
         # choose required set
-        required = required_base + ( [] if not has_cv else required_extra )
+        required = required_base + ( [] if has_cv else required_extra )
         logger.debug("Final required fields to validate: %s", required)
 
         for key in required:
