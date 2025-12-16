@@ -1,36 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Thank you for your interest in affiliate with Novanest</title>
-</head>
-<body>
-    <p>Hello {{ first_name }},</p>
+{% extends "base_email.html" %}
 
-    <p>Thank you for submitting your affiliate interest form. We truly value your willingness to explore collaboration with Novanest Venture.</p>
-    <p>Our team will carefully review your information and get back to you within the next few days to discuss potential opportunities.</p>
-    <p>In the meantime, if you have any questions, feel free to contact us at info@NovaNestVenture.com or visit our website https://www.NovaNestVenture.com.</p>
+{% block title %}Thank you for your interest in affiliate with Novanest{% endblock %}
 
-    <table cellpadding="6" cellspacing="0" border="0">
-        <tr><td><strong>Full name</strong></td><td>{{ first_name }} {{ last_name|default:"" }}</td></tr>
-        <tr><td><strong>Email</strong></td><td>{{ email|default:"—" }}</td></tr>
-        <tr><td><strong>Phone Number</strong></td><td>{{ phone_number|default:"—" }}</td></tr>
-        <tr><td><strong>Country</strong></td><td>{{ country|default:"—" }}</td></tr>
-        <tr><td><strong>City</strong></td><td>{{ city|default:"—" }}</td></tr>
-        <tr><td><strong>Company Name</strong></td><td>{{ company_name|default:"—" }}</td></tr>
-        <tr><td><strong>Website address</strong></td><td>{{ website|default:"—" }}</td></tr>
-        <tr><td><strong>Linkedin address</strong></td><td>{{ linkedin|default:"—" }}</td></tr>
-        <tr><td><strong>Brief Introduction</strong></td><td>{{ brief_introduction|default:"—" }}</td></tr>
-        <tr><td><strong>How did you hear about us?</strong></td><td>{{ how_did_you_know_us|default:"—" }}</td></tr>
-        <tr><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
-    </table>
+{% block content %}
+<p>Thank you for submitting your affiliate interest form. We truly value your willingness to explore collaboration with Novanest Venture.</p>
+<p>Our team will carefully review your information and get back to you within the next few days to discuss potential opportunities.</p>
+<p>In the meantime, if you have any questions, feel free to contact us at <a href="mailto:info@NovaNestVenture.com" style="color:#0066cc">info@NovaNestVenture.com</a> or visit our website <a href="https://www.NovaNestVenture.com" style="color:#0066cc">www.NovaNestVenture.com</a>.</p>
 
-    <p>We look forward to building a successful affiliate relationship together!</p>
+<table cellpadding="8" cellspacing="0" border="0" style="margin:20px 0;width:100%;border-collapse:collapse">
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Full name</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ first_name }} {{ last_name|default:"" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Email</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ email|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Phone Number</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ phone_number|default:"—" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Country</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ country|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>City</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ city|default:"—" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Company Name</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ company_name|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Website address</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ website|default:"—" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>Linkedin address</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ linkedin|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td style="border-bottom:1px solid #e0e0e0"><strong>Brief Introduction</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ brief_introduction|default:"—" }}</td></tr>
+    <tr><td style="border-bottom:1px solid #e0e0e0"><strong>How did you hear about us?</strong></td><td style="border-bottom:1px solid #e0e0e0">{{ how_did_you_know_us|default:"—" }}</td></tr>
+    <tr style="background-color:#f5f5f5"><td><strong>Registered on</strong></td><td>{{ created_at|date:"SHORT_DATETIME_FORMAT" }}</td></tr>
+</table>
 
-    <p>Best regards,<br>NovaNest Venture Team</p>
-    <br />
-    <br />
-    <br />
-    <p><small>This is an automated message, please do not reply.</small></p>
-</body>
-</html>
+<p>We look forward to building a successful affiliate relationship together!</p>
+{% endblock %}
