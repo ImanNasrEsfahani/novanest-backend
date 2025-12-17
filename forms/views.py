@@ -11,7 +11,7 @@ from .serializers import StartupFormSerializer,ContactUsSerializer,AffiliateRegi
 class StartUpsFormView(CreateAPIView):
     queryset = StartUpsForm.objects.all()
     serializer_class = StartupFormSerializer
-    parser_classes = [FormParser,MultiPartParser]
+    parser_classes = [JSONParser, FormParser, MultiPartParser]
     http_method_names = ['post']
 
 class ContactUsView(CreateAPIView):
