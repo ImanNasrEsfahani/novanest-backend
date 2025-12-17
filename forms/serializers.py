@@ -15,10 +15,6 @@ import secrets, string
 logger = logging.getLogger(__name__)
 
 class StartupFormSerializer(serializers.ModelSerializer):
-    pitchDeckFile = serializers.FileField(required=False)
-    businessPlanFile = serializers.FileField(required=False)
-    financialFile = serializers.FileField(required=False)
-
     class Meta:
         model = StartUpsForm
         fields = '__all__'
