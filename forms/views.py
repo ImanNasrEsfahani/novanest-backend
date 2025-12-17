@@ -4,15 +4,24 @@ from rest_framework.views import APIView
 from django.middleware.csrf import get_token
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
+from rest_framework import status
+import logging
 from .models import StartUpsForm,ContactUs,AffiliateRegistration,InvestorRegistration,MentorRegistration,TeamRegistration,TraineeRegistration
 from .serializers import StartupFormSerializer,ContactUsSerializer,AffiliateRegistrationSerializer,InvestorRegistrationSerializer, MentorRegistrationSerializer, TeamRegistrationSerializer, TraineeRegistrationSerializer
-# Create your views here.
+
+logger = logging.getLogger(__name__)
 
 class StartUpsFormView(CreateAPIView):
     queryset = StartUpsForm.objects.all()
     serializer_class = StartupFormSerializer
     parser_classes = [JSONParser, FormParser, MultiPartParser]
     http_method_names = ['post']
+    
+    def create(self, request, *args, **kwargs):
+        logger.debug("StartUpsFormView.create called")
+        logger.debug("Request data: %s", request.data)
+        logger.debug("Request FILES: %s", request.FILES.keys() if hasattr(request, 'FILES') else 'No FILES')
+        return super().create(request, *args, **kwargs)
 
 class ContactUsView(CreateAPIView):
     queryset = ContactUs.objects.all()
