@@ -46,11 +46,18 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     "http://localhost:3000",
+    
     'back.novanestventure.com',
     'www.novanestventure.com',
     'novanestventure.com',
     "https://www.novanestventure.com",
     "https://novanestventure.com",
+
+    'back.novanac.com',
+    'www.novanac.com',
+    'novanac.com',
+    "https://www.novanac.com",
+    "https://novanac.com",
 ]
 
 
