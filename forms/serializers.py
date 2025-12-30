@@ -605,7 +605,7 @@ class TraineeRegistrationSerializer(serializers.ModelSerializer):
         logger.debug("has_cv determined as: %s (files.get('cvFile')=%s, initial.get('cvFile')=%s)", has_cv, bool(files.get('cvFile')), bool(initial.get('cvFile')))
 
         required_base = ['firstName', 'lastName', 'email', 'phoneNumber', 'countryOfResidence', 'cityOfResidence', 'fieldOfExpert']
-        required_extra = ['birthDate', 'tellUsAboutYourself']
+        required_extra = ['birthDate']
         not_required = ['fieldOfExpertOther']
         logger.debug("required_base: %s", required_base)
         logger.debug("required_extra: %s", required_extra)
